@@ -1,0 +1,131 @@
+section.auth {
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  .topbar {
+    padding: 64px 0px 32px 0px;
+  }
+  .left-content {
+    .text-center {
+      text-align: center !important;
+      text-align: -webkit-center !important;
+      text-align: -moz-center !important;
+      h4 {
+        font-weight: 700;
+        font-size: 31.61px;
+        line-height: 100%;
+        color: #00bab5;
+        margin-bottom: 20px;
+      }
+      p {
+        font-weight: 400;
+        font-size: 21.07px;
+        color: #696969;
+        margin-bottom: 50px;
+      }
+    }
+    .custom_form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      form {
+        max-width: 550px;
+        label {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 100%;
+          color: #000;
+          margin-bottom: 10px;
+        }
+        a.forgot {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 100%;
+          color: #000;
+          margin-bottom: 10px;
+        }
+        input.field {
+          border-radius: 5px;
+          padding: 10px 20.02px;
+          border: 2.11px solid #cdcdcd;
+          margin-bottom: 20px;
+        }
+        select {
+          border-radius: 5px;
+          padding: 10px 20.02px;
+          border: 2.11px solid #cdcdcd;
+          margin-bottom: 20px;
+        }
+        .stylish-checkbox {
+          position: relative;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          margin: 10px 0px 30px 0px;
+        }
+
+        .stylish-checkbox input[type="checkbox"] {
+          opacity: 0;
+          position: absolute;
+          cursor: pointer;
+        }
+
+        .stylish-checkbox .form-check-label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          font-size: 16px;
+          color: #333;
+          user-select: none;
+        }
+
+        .stylish-checkbox .custom-box {
+          width: 24px;
+          height: 24px;
+          border: 2px solid #d1d0d0;
+          display: inline-block;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+
+        .stylish-checkbox
+          input[type="checkbox"]:checked
+          + label
+          .custom-box::after {
+          content: "";
+          position: absolute;
+          top: 3px;
+          left: 7px;
+          width: 6px;
+          height: 12px;
+          border: solid #007bff;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+        button.register {
+          width: 100%;
+          height: 64px;
+          height: 63.22265625;
+          border-radius: 5.27px;
+          background: #00bab5;
+        }
+        p.login-btn {
+          text-align: center !important;
+          text-align: -webkit-center !important;
+          text-align: -moz-center !important;
+          margin: 40px 0px 0px 0px;
+
+          font-weight: 400;
+          font-size: 18.97px;
+          line-height: 100%;
+          text-transform: capitalize;
+          color: #000;
+          a {
+            color: #00bab5;
+          }
+        }
+      }
+    }
+  }
+}
