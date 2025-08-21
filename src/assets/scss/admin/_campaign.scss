@@ -1,0 +1,16 @@
+.product {
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.card {
+  -webkit-box-shadow: 0 5px 20px rgba(146, 153, 184, 0.03);
+  box-shadow: 0 5px 20px rgba(146, 153, 184, 0.03);
+}
+.card-img,
+.card-img-top {
+  -webkit-border-top-left-radius: calc(0.25rem - 1px);
+  border-top-left-radius: calc(0.25rem - 1px);
+  -webkit-border-top-right-radius: calc(0.25rem - 1px);
+  border-top-right-radius: calc(0.25rem - 1px);
+}

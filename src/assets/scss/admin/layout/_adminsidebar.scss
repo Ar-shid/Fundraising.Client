@@ -1,0 +1,292 @@
+.sidebar {
+  position: fixed;
+  height: calc(100% - 74px);
+  overflow-y: auto;
+  left: 0;
+  top: 74px;
+  -webkit-box-shadow: 0 0 30px rgba(146, 153, 184, 0.1);
+  box-shadow: 0 0 30px rgba(146, 153, 184, 0.1);
+  width: 280px;
+  background: #fff;
+  padding: 0;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+.sidebar .menu-text {
+  -webkit-transition: 0.2s;
+  -o-transition: 0.2s;
+  transition: 0.2s;
+}
+
+.sidebar .menuItem {
+  display: inline-block;
+}
+
+.sidebar.collapsed {
+  width: 76px;
+  padding: 0;
+}
+
+.sidebar.collapsed .menu-text {
+  display: none;
+}
+
+.sidebar.collapsed .menuItem {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar__menu-group {
+  margin-bottom: 0;
+}
+
+.sidebar.collapsed .sidebar__menu-group > span {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar__menu-group li {
+  position: relative;
+}
+
+.sidebar.collapsed .sidebar__menu-group li.menu-title {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar__menu-group li a {
+  width: 42px;
+  height: 42px;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  padding: 15px 0;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.sidebar.collapsed .sidebar__menu-group li a .nav-icon {
+  margin-right: 0;
+}
+
+.sidebar.collapsed .sidebar__menu-group li a .toggle-icon {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar__menu-group li a.active,
+.sidebar.collapsed .sidebar__menu-group li a:hover {
+  background-color: rgba(95, 99, 242, 0.05);
+}
+
+.sidebar.collapsed .sidebar__menu-group .has-child ul {
+  width: 240px;
+  background: #fff;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  right: -225px;
+  position: absolute;
+  top: 0;
+  padding: 10px 20px;
+  -webkit-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  transform: scale(0.8);
+  -webkit-transition: 0.3s ease;
+  -o-transition: 0.3s ease;
+  transition: 0.3s ease;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 350px;
+  overflow: auto;
+  z-index: 999;
+}
+
+.sidebar.collapsed .sidebar__menu-group .has-child ul li a {
+  width: 100%;
+  height: auto;
+  padding: 8px 0;
+  text-align: left;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+
+.sidebar.collapsed .sidebar__menu-group .has-child ul li a.active,
+.sidebar.collapsed .sidebar__menu-group .has-child ul li a:hover {
+  background-color: transparent;
+}
+
+.sidebar.collapsed .sidebar__menu-group .has-child:hover ul {
+  display: block !important;
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  visibility: visible;
+  opacity: 1;
+  pointer-events: all;
+}
+
+.sidebar.collapsed .mCSB_container,
+.sidebar.collapsed .mCustomScrollBox {
+  overflow: visible;
+}
+
+.sidebar__menu-group {
+  margin-bottom: 25px;
+}
+
+.sidebar__menu-group ul.sidebar_nav {
+  margin: 50px 0 0 0;
+  padding: 0;
+  list-style: none;
+}
+.sidebar__menu-group ul.sidebar_nav li.menu-title span {
+  text-transform: uppercase;
+  display: block;
+  color: #868eae;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 30px;
+  margin-bottom: 10px;
+}
+
+.sidebar__menu-group ul.sidebar_nav li > a {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 25px 0px 25px 50px;
+  position: relative;
+  color: var(--gray-color);
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+}
+.sidebar__menu-group ul.sidebar_nav li {
+  padding-left: 20px;
+}
+.sidebar__menu-group ul.sidebar_nav li > a.active {
+  color: var(--primary-color);
+  background-color: #f4f4f4;
+  font-weight: 500;
+  border-radius: 100px 0px 0px 100px;
+}
+.sidebar__menu-group ul.sidebar_nav li > a svg path {
+  fill: #8c8c8c;
+}
+.sidebar__menu-group ul.sidebar_nav li > a.active svg path {
+  fill: #00bab5;
+}
+.sidebar__menu-group ul.sidebar_nav li > a .nav-icon {
+  color: #adb4d2;
+  display: inline-block;
+  margin-right: 20px;
+  width: 20px;
+  height: 20px;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.sidebar__menu-group ul.sidebar_nav li > a .toggle-icon {
+  font-size: 12px;
+  font-family: "Line Awesome Free";
+  font-weight: 900;
+  margin-left: auto;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.sidebar__menu-group ul.sidebar_nav li > a .toggle-icon:before {
+  content: "\f105";
+}
+
+.sidebar__menu-group ul.sidebar_nav li > a .menuItem {
+  position: absolute;
+  right: 52px;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  height: auto;
+  font-size: 10px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 3px 4px 4px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+.sidebar__menu-group ul.sidebar_nav li ul {
+  padding: 8px 0 12px 36px;
+}
+
+.sidebar__menu-group ul.sidebar_nav li.has-child.open > a .toggle-icon:before {
+  content: "\f107";
+}
+
+.sidebar__menu-group ul.sidebar_nav li ul li > a.active,
+.sidebar__menu-group ul.sidebar_nav li ul li > a:hover {
+  background-color: transparent;
+}
+
+.sidebar-toggle {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+.sidebar-toggle:hover {
+  background-color: rgba(95, 99, 242, 0.1);
+}
+
+.sidebar-toggle:hover svg #Path_1,
+.sidebar-toggle:hover svg #Path_2,
+.sidebar-toggle:hover svg #Path_3 {
+  fill: #5f63f2;
+}
+
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+  opacity: 0;
+}
+
+.submenu.show {
+  max-height: 500px; /* big enough to fit your menu */
+  opacity: 1;
+}
+
+.has-child > a {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.has-child.open .toggle-icon {
+  transform: rotate(90deg);
+}

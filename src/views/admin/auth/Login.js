@@ -1,7 +1,36 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../../api/Auth/Auth";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const loginUser = async (e) => {
+    e.preventDefault();
+    const data = {
+      email,
+      password,
+    };
+
+    try {
+      const response = await login(data);
+      const { token, user } = response;
+      localStorage.setItem("token", token);
+      toast.success("LogIn successfully!");
+      navigate("/admin-home");
+    } catch (e) {
+      console.log("loginUser error:", e);
+    } finally {
+      // setIsLoading(false);
+      // Stop loading in all cases
+    }
+  };
+
   return (
     <>
+      <ToastContainer />
       <section className="auth login">
         <div className="container">
           <div className="row">
@@ -27,9 +56,11 @@ const Login = () => {
                       <div className="col-12">
                         <label className="form-label">Email Address</label>
                         <input
-                          type="text"
+                          type="email"
                           className="form-control field"
-                          placeholder="Enter Here"
+                          placeholder="Enter Your Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
                       <div className="col-12">
@@ -42,7 +73,9 @@ const Login = () => {
                         <input
                           type="password"
                           className="form-control field"
-                          placeholder="**********"
+                          placeholder="Enter Password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                         />
                       </div>
                       <div class="stylish-checkbox">
@@ -58,7 +91,11 @@ const Login = () => {
                       </div>
                     </div>
 
-                    <button type="submit" className="btn register">
+                    <button
+                      onClick={loginUser}
+                      // type="submit"
+                      className="btn register"
+                    >
                       Login
                     </button>
                     <p className="login-btn">
