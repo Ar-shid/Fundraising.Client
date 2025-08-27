@@ -128,9 +128,22 @@ h6 {
   border-radius: 5px;
   color: #fff;
 }
+.primary-btn {
+  background: var(--primary-color);
+  padding: 11px 18px;
+  border-radius: 5px;
+  color: #fff;
+}
+.secondry-btn {
+  border: 1px solid #d1d0d0;
+  padding: 11px 18px;
+  border-radius: 5px;
+  color: var(--primary-color);
+}
 @import "var";
 @import "admin/auth/signup";
 @import "admin/layout/adminheader";
 @import "admin/layout/adminsidebar";
 @import "admin/home";
 @import "admin/campaign";
+@import "admin/modal";

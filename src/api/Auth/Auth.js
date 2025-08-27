@@ -17,3 +17,13 @@ export const login = async (user) => {
   });
   return data;
 };
+
+// GET /api/Auth/GetOrganizers - Get all organizers
+export const getOrganizers = async (token) => {
+  const { data } = await invoke({
+    url: `/api/Auth/GetOrganizers`,
+    method: "GET",
+    token,
+  });
+  return data;
+};

@@ -1,6 +1,7 @@
 import AdminHeader from "../layout/AdminHeader";
 import Sidebar from "../layout/Sidebar";
 import ScoreCard from "./section/ScoreCard";
+import CampaignCard from "../campaign/section/CampaignCard";
 const AdminHome = () => {
   return (
     <>
@@ -18,6 +19,14 @@ const AdminHome = () => {
                 </div>
               </div>
               <ScoreCard />
+              <div className="col-lg-12">
+                <div className="breadcrumb-main">
+                  <h4 className="text-capitalize breadcrumb-title">
+                    Your Campaigns
+                  </h4>
+                </div>
+              </div>
+              <CampaignCard />
             </div>
           </div>
         </div>

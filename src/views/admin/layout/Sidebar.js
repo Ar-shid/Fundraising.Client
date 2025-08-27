@@ -141,7 +141,7 @@
 // };
 // export default Sidebar;
 
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 const Sidebar = () => {
   return (
     <>
@@ -221,7 +221,10 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li className="">
-              <a href="#">
+              <NavLink
+                to="/admin-group"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
                 <svg
                   className="nav-icon"
                   viewBox="0 0 31 31"
@@ -235,7 +238,7 @@ const Sidebar = () => {
                 </svg>
 
                 <span className="menu-text">Groups</span>
-              </a>
+              </NavLink>
             </li>
             <li className="">
               <a href="#">
@@ -291,7 +294,10 @@ const Sidebar = () => {
               </a>
             </li>
             <li className="">
-              <a href="#">
+              <NavLink
+                to="/admin-product"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
                 <svg
                   className="nav-icon"
                   viewBox="0 0 20 18"
@@ -305,7 +311,7 @@ const Sidebar = () => {
                 </svg>
 
                 <span className="menu-text">Products</span>
-              </a>
+              </NavLink>
             </li>
             <li className="">
               <a href="#">

@@ -6,6 +6,7 @@
 .card {
   -webkit-box-shadow: 0 5px 20px rgba(146, 153, 184, 0.03);
   box-shadow: 0 5px 20px rgba(146, 153, 184, 0.03);
+  border: none;
 }
 .card-img,
 .card-img-top {
@@ -13,4 +14,123 @@
   border-top-left-radius: calc(0.25rem - 1px);
   -webkit-border-top-right-radius: calc(0.25rem - 1px);
   border-top-right-radius: calc(0.25rem - 1px);
+}
+.campaign-card {
+  margin-bottom: 20px;
+}
+.campaign-card .card-title {
+  font-weight: 500;
+  font-size: 14px;
+  color: #161616;
+  margin-bottom: 15px;
+}
+.campaign-card .card-desc {
+  font-weight: 500;
+  font-size: 12px;
+  color: #8c8c8c;
+  line-height: 18px;
+  margin-bottom: 15px;
+}
+.campaign-card .product-item__button {
+  opacity: 1;
+  border-top-left-radius: 7.18px;
+  border-top-right-radius: 7.18px;
+  border-bottom-right-radius: 7.18px;
+  border-bottom-left-radius: 7.18px;
+  border-width: 1px;
+  border: 1px solid #00627c;
+  margin-bottom: 20px;
+}
+.campaign-card .product-item__button .btn-update {
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
+  width: 85%;
+}
+.campaign-card .product-item__button .btn-edit {
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
+  width: 15%;
+  border-left: 1px solid #00627c;
+  border-radius: 0px;
+}
+.campaign-card .product-desc-price {
+  border-top: 1px solid #e6e6e6;
+  padding-top: 20px;
+  justify-content: space-between;
+  text-align: center;
+}
+.campaign-card .product-desc-price span {
+  font-weight: 400;
+  font-size: 10.05px;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  color: #8c8c8c;
+}
+.campaign-card .product-desc-price h4 {
+  font-weight: 500;
+  margin-top: 10px;
+  font-size: 11.49px;
+  vertical-align: middle;
+  color: #16192c;
+}
+.campaign-card .product-desc-price div {
+  border-right: 1px solid #e6e6e6;
+  width: 33%;
+}
+.group-card .product-desc-price div {
+  width: 50%;
+}
+.campaign-card .product-desc-price div:last-child {
+  border: none;
+}
+.campaign-card .product-item__image {
+  position: relative;
+}
+.campaign-card .days-left {
+  position: absolute;
+  font-size: 10px;
+  line-height: 1.8;
+  font-weight: 400;
+  background-color: #fff;
+  -webkit-box-shadow: 0 5px 10px #9299b81a;
+  box-shadow: 0 5px 10px #9299b81a;
+  left: 15px;
+  top: 15px;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.campaign-card .percent {
+  position: absolute;
+
+  background-color: #fff;
+  -webkit-box-shadow: 0 5px 10px #9299b81a;
+  box-shadow: 0 5px 10px #9299b81a;
+  left: 15px;
+  height: 40px;
+  bottom: 15px;
+  border-radius: 100%;
+  padding: 5px 10px;
+  border: 1px solid #00bab5;
+}
+.campaign-card .percent span {
+  color: #00627c;
+  font-size: 10px;
+  line-height: 1.8;
+  font-weight: 500;
+}
+.campaign-card .featured {
+  position: absolute;
+  font-size: 10px;
+  line-height: 1.8;
+  font-weight: 400;
+  color: #fff;
+  background-color: #00bab5;
+  -webkit-box-shadow: 0 5px 10px #9299b81a;
+  box-shadow: 0 5px 10px #9299b81a;
+  right: -5px;
+  bottom: 15px;
+  border-radius: 5px;
+  padding: 5px 10px;
 }

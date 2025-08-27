@@ -1,12 +1,41 @@
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../../../api/Auth/Auth";
-import { useState } from "react";
+import { login, getOrganizers } from "../../../api/Auth/Auth";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { runAllTests } from "../../../api/test-apis";
 import "react-toastify/dist/ReactToastify.css";
+const showErrorsInToast = (errors) => {
+  if (Array.isArray(errors)) {
+    // Case: password policy (array of objects with description)
+    errors.forEach((err) => {
+      toast.error(err.description || err.message || JSON.stringify(err));
+    });
+  } else if (typeof errors === "object" && errors !== null) {
+    // Case: validation errors object
+    Object.values(errors).forEach((errorArray) => {
+      if (Array.isArray(errorArray)) {
+        errorArray.forEach((msg) => toast.error(msg));
+      }
+    });
+  } else {
+    // Fallback (string or unexpected)
+    toast.error(errors?.toString() || "Something went wrong!");
+  }
+};
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const runTests = async () => {
+    const result = await runAllTests();
+    console.log("Tests result:", result);
+  };
+
+  useEffect(() => {
+    runTests();
+  }, []);
+
   const loginUser = async (e) => {
     e.preventDefault();
     const data = {
@@ -16,11 +45,37 @@ const Login = () => {
 
     try {
       const response = await login(data);
-      const { token, user } = response;
+      // const { token } = response;
+      const token = response?.data?.token; // if you're using axios
+
       localStorage.setItem("token", token);
+      
+      // Fetch organizers after successful login
+      try {
+        const organizersResponse = await getOrganizers(token);
+        if (organizersResponse?.data && organizersResponse.data.length > 0) {
+          // Get the first organizer's ID and save it
+          const firstOrganizer = organizersResponse.data[0];
+          localStorage.setItem("organizerId", firstOrganizer.id);
+          localStorage.setItem("organizerName", firstOrganizer.name);
+          console.log("Organizer saved:", firstOrganizer);
+        }
+      } catch (organizerError) {
+        console.error("Error fetching organizers:", organizerError);
+        // Don't block login if organizers fetch fails
+      }
+      
       toast.success("LogIn successfully!");
       navigate("/admin-home");
-    } catch (e) {
+    } catch (error) {
+      const backendErrors = error.response?.data;
+      if (backendErrors?.errors) {
+        showErrorsInToast(backendErrors.errors);
+      } else if (backendErrors.message) {
+        toast.error(backendErrors.message);
+      } else {
+        showErrorsInToast(backendErrors);
+      }
       console.log("loginUser error:", e);
     } finally {
       // setIsLoading(false);

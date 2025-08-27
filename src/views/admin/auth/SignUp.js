@@ -7,11 +7,11 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
-  const [middleName, setmiddleName] = useState("");
-  const [userName, setuserName] = useState("");
+  // const [middleName, setmiddleName] = useState("");
+  // const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [roles, setRoles] = useState(["admin"]);
+  // const [roles, setRoles] = useState(["admin"]);
 
   const showErrorsInToast = (errors) => {
     if (Array.isArray(errors)) {
@@ -37,11 +37,11 @@ const SignUp = () => {
     const data = {
       firstName,
       lastName,
-      middleName,
-      userName,
+      // middleName,
+      // userName,
       email,
       password,
-      roles,
+      // roles,
     };
 
     try {

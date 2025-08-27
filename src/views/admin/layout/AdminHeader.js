@@ -4,17 +4,18 @@ import { jwtDecode } from "jwt-decode";
 const AdminHeader = () => {
   const token = localStorage.getItem("token");
   let email = "";
+  let name = "";
 
   if (token) {
     const decoded = jwtDecode(token);
-    if (decoded.email) {
+    if (decoded.name) {
       email = decoded.email.split("@")[0];
+      name = decoded.name;
     }
   }
 
   return (
     <>
-      <h4>{email}</h4>
       <header className="header-top">
         <nav className="navbar navbar-light">
           <div className="navbar-left">
@@ -41,6 +42,67 @@ const AdminHeader = () => {
           {/* ends: navbar-left */}
           <div className="navbar-right">
             <ul className="navbar-right__menu">
+              <li className="nav-author">
+                <div className="dropdown-custom">
+                  <a href="javascript:;" className="nav-item-toggle me-5">
+                    {/* <img
+                      src="./img/icon/user.png"
+                      alt=""
+                      className="rounded-circle"
+                    /> */}
+                    {name}
+                  </a>
+                  <div className="dropdown-wrapper">
+                    <div className="nav-author__info">
+                      <div className="author-img">
+                        <img
+                          src="img/author-nav.jpg"
+                          alt=""
+                          className="rounded-circle"
+                        />
+                      </div>
+                      <div>
+                        <h6>{name}</h6>
+                        <span>UI Designer</span>
+                      </div>
+                    </div>
+                    <div className="nav-author__options">
+                      <ul>
+                        <li>
+                          <a href="#">
+                            <span data-feather="user" /> Profile
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <span data-feather="settings" /> Settings
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <span data-feather="key" /> Billing
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <span data-feather="users" /> Activity
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <span data-feather="bell" /> Help
+                          </a>
+                        </li>
+                      </ul>
+                      <a href="#" className="nav-author__signout">
+                        <span data-feather="log-out" /> Sign Out
+                      </a>
+                    </div>
+                  </div>
+                  {/* ends: .dropdown-wrapper */}
+                </div>
+              </li>
+
               <li className="nav-message">
                 <div className="dropdown-custom">
                   <Link to="/" className="nav-item-toggle">

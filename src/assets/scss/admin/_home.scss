@@ -17,7 +17,7 @@
   -ms-flex-align: center;
   align-items: center;
   margin-bottom: 23px;
-  margin-top: 23px;
+  margin-top: 40px;
   line-height: 1.85714;
 }
 .breadcrumb-title {
@@ -32,11 +32,33 @@
   box-shadow: 0 5px 20px rgba(146, 153, 184, 0.03);
   padding: 24px 25px 20px 25px;
 }
+.ap-po-details .overview-content .icon {
+  background-color: var(--primary-color);
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 35px;
+}
+.ap-po-details .overview-content h1 {
+  font-weight: 600;
+  font-size: 22.51px;
+  line-height: 22.51px;
+  letter-spacing: 0%;
+}
+
 .ap-po-details .overview-content p {
-  margin: 2px 0 24px;
   color: #868eae;
   font-size: 14px;
   line-height: 1.78571;
   font-weight: 400;
   text-transform: capitalize;
+  margin: 0px;
+}
+.ap-po-details .ap-po-details-time strong {
+  font-weight: 600;
+  font-size: 11.28px;
+  color: #a7a7a7;
 }
