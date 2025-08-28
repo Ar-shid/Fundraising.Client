@@ -1,7 +1,69 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../../api/Auth/Auth";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const SignUp = () => {
+  const navigate = useNavigate();
+  const [firstName, setfirstName] = useState("");
+  const [lastName, setlastName] = useState("");
+  // const [middleName, setmiddleName] = useState("");
+  // const [userName, setuserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const [roles, setRoles] = useState(["admin"]);
+
+  const showErrorsInToast = (errors) => {
+    if (Array.isArray(errors)) {
+      // Case: password policy (array of objects with description)
+      errors.forEach((err) => {
+        toast.error(err.description || err.message || JSON.stringify(err));
+      });
+    } else if (typeof errors === "object" && errors !== null) {
+      // Case: validation errors object
+      Object.values(errors).forEach((errorArray) => {
+        if (Array.isArray(errorArray)) {
+          errorArray.forEach((msg) => toast.error(msg));
+        }
+      });
+    } else {
+      // Fallback (string or unexpected)
+      toast.error(errors?.toString() || "Something went wrong!");
+    }
+  };
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+    const data = {
+      firstName,
+      lastName,
+      // middleName,
+      // userName,
+      email,
+      password,
+      // roles,
+    };
+
+    try {
+      const response = await register(data);
+      toast.success("User created successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 7000);
+    } catch (error) {
+      const backendErrors = error.response?.data;
+      if (backendErrors?.errors) {
+        showErrorsInToast(backendErrors.errors);
+      } else {
+        showErrorsInToast(backendErrors);
+      }
+    }
+  };
+
   return (
     <>
+      <ToastContainer />
+
       <section className="auth register">
         <div className="container">
           <div className="row">
@@ -29,7 +91,9 @@ const SignUp = () => {
                         <input
                           type="text"
                           className="form-control field"
-                          placeholder="Enter Here"
+                          placeholder="First Name"
+                          value={firstName}
+                          onChange={(e) => setfirstName(e.target.value)}
                         />
                       </div>
                       <div className="col-6">
@@ -37,22 +101,25 @@ const SignUp = () => {
                         <input
                           type="text"
                           className="form-control field"
-                          placeholder="Enter Here"
+                          placeholder="Last Name"
+                          value={lastName}
+                          onChange={(e) => setlastName(e.target.value)}
                         />
                       </div>
                       <div className="col-12">
                         <label className="form-label">Email Address</label>
                         <input
-                          type="text"
+                          type="email"
                           className="form-control field"
-                          placeholder="Enter Here"
+                          placeholder="Email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
                       <div className="col-12">
                         <select className="form-control">
-                          <option>What you want to be</option>
-                          <option>Become an Organizer</option>
-                          <option>Become Sale Person</option>
+                          <option>Your Role</option>
+                          <option>Admin</option>
                         </select>
                       </div>
                       <div className="col-12">
@@ -60,10 +127,12 @@ const SignUp = () => {
                         <input
                           type="password"
                           className="form-control field"
-                          placeholder="**********"
+                          placeholder="Set Your Password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                         />
                       </div>
-                      <div class="stylish-checkbox">
+                      {/* <div class="stylish-checkbox">
                         <input
                           type="checkbox"
                           class="form-check-input"
@@ -73,10 +142,14 @@ const SignUp = () => {
                           <span class="custom-box"></span>
                           <span style={{ marginTop: "2px" }}>Remember me</span>
                         </label>
-                      </div>
+                      </div> */}
                     </div>
 
-                    <button type="submit" className="btn register">
+                    <button
+                      onClick={registerUser}
+                      type="submit"
+                      className="btn register"
+                    >
                       Sign up
                     </button>
                     <p className="login-btn">

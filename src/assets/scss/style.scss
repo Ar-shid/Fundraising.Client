@@ -1,8 +1,149 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 body {
   font-family: "Poppins", sans-serif;
+  background-color: #f4f4f4;
+}
+a {
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0px;
+  padding: 0px;
 }
 .container {
   max-width: 1512px;
 }
+.card.card-default {
+  -webkit-box-shadow: 0 5px 20px rgba(146, 153, 184, 0.03);
+  box-shadow: 0 5px 20px rgba(146, 153, 184, 0.03);
+  border: 0 none;
+}
+.atbd-breadcrumb__item span {
+  font-size: 14px;
+  -webkit-transform: rotate(-20deg);
+  -ms-transform: rotate(-20deg);
+  transform: rotate(10deg);
+  display: inline-block;
+  padding: 0px 10px;
+}
+.atbd-breadcrumb__item:first-child a {
+  font-size: 14px;
+  color: var(--primary-color);
+}
+.atbd-breadcrumb__item a {
+  color: var(--black-color);
+}
+.card-header {
+  padding: 20px;
+  margin-bottom: 0;
+  background-color: #fff;
+  border-bottom: 1px solid #f1f2f6;
+}
+.campaign-form label {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--black-color);
+  margin-bottom: 10px;
+}
+.campaign-form .form-group {
+  margin-bottom: 20px;
+}
+.form-control.ih-medium {
+  height: 58px;
+}
+.campaign-form input::placeholder {
+  font-size: 14px;
+  color: #909090;
+}
+.campaign-form textarea::placeholder {
+  font-size: 14px;
+  color: #909090;
+}
+.campaign-form .upload__image-wrapper h4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  appearance: none;
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  cursor: pointer;
+  color: #909090;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+.campaign-form .upload__image-wrapper h4 span {
+  color: var(--primary-color);
+}
+.campaign-form .image-list {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow-y: auto;
+}
+.campaign-form .image-list .image-item {
+  margin-bottom: 20px;
+}
+.campaign-form .image-list .image-item img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.campaign-form .image-list .image-item__btn-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.campaign-form .image-list .image-item__btn-wrapper span {
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.campaign-form .form-group ul {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.campaign-form .form-group ul li {
+  background: var(--primary-color);
+  padding: 11px 18px;
+  border-radius: 5px;
+  color: #fff;
+}
+.primary-btn {
+  background: var(--primary-color);
+  padding: 11px 18px;
+  border-radius: 5px;
+  color: #fff;
+}
+.secondry-btn {
+  border: 1px solid #d1d0d0;
+  padding: 11px 18px;
+  border-radius: 5px;
+  color: var(--primary-color);
+}
+@import "var";
 @import "admin/auth/signup";
+@import "admin/layout/adminheader";
+@import "admin/layout/adminsidebar";
+@import "admin/home";
+@import "admin/campaign";
+@import "admin/modal";

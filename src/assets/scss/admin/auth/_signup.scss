@@ -14,7 +14,7 @@ section.auth {
         font-weight: 700;
         font-size: 31.61px;
         line-height: 100%;
-        color: #00bab5;
+        color: var(--primary-color);
         margin-bottom: 20px;
       }
       p {
@@ -34,14 +34,14 @@ section.auth {
           font-weight: 400;
           font-size: 16px;
           line-height: 100%;
-          color: #000;
+          color: var(--black-color);
           margin-bottom: 10px;
         }
         a.forgot {
           font-weight: 400;
           font-size: 16px;
           line-height: 100%;
-          color: #000;
+          color: var(--black-color);
           margin-bottom: 10px;
         }
         input.field {
@@ -108,7 +108,7 @@ section.auth {
           height: 64px;
           height: 63.22265625;
           border-radius: 5.27px;
-          background: #00bab5;
+          background: var(--primary-color);
         }
         p.login-btn {
           text-align: center !important;
@@ -120,9 +120,9 @@ section.auth {
           font-size: 18.97px;
           line-height: 100%;
           text-transform: capitalize;
-          color: #000;
+          color: var(--black-color);
           a {
-            color: #00bab5;
+            color: var(--primary-color);
           }
         }
       }
