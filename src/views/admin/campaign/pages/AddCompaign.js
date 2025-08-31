@@ -2,7 +2,7 @@ import AdminHeader from "../../layout/AdminHeader";
 import { Link } from "react-router-dom";
 import React from "react";
 import ImageUploading from "react-images-uploading";
-// import { AddCompaignPost } from "../../../../api/Campaign/Campaign";
+import { createCampaign } from "../../../../api/Campaign/Campaign";
 import { useState, useEffect } from "react";
 const AddCompaign = () => {
   const [formData, setFormData] = useState({
@@ -22,14 +22,17 @@ const AddCompaign = () => {
   useEffect(() => {
     const organizerId = localStorage.getItem("organizerId");
     const organizerName = localStorage.getItem("organizerName");
-    
+
     if (organizerId && organizerName) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         assignedToId: organizerId,
-        assignedToName: organizerName
+        assignedToName: organizerName,
       }));
-      console.log("Organizer loaded from localStorage:", { organizerId, organizerName });
+      console.log("Organizer loaded from localStorage:", {
+        organizerId,
+        organizerName,
+      });
     }
   }, []);
 
@@ -47,91 +50,94 @@ const AddCompaign = () => {
     setImages(imageList);
   };
 
-  // const CampaignPost = async (e) => {
-  //   e.preventDefault();
-  //   const formDataToSend = new FormData();
+  const CampaignPost = async (e) => {
+    debugger;
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    e.preventDefault();
+    const formDataToSend = new FormData();
 
-  //   // ✅ Basic fields
-  //   formDataToSend.append("Id", 0);
-  //   formDataToSend.append("Name", formData.name || "");
-  //   formDataToSend.append("Description", formData.description || "");
-  //   formDataToSend.append(
-  //     "RequiredAmount",
-  //     parseFloat(formData.requiredAmount) || 0
-  //   );
-  //   formDataToSend.append(
-  //     "RaisedAmount",
-  //     parseFloat(formData.raisedAmount) || 0
-  //   );
-  //   formDataToSend.append(
-  //     "StartDate",
-  //     formData.startDate || new Date().toISOString()
-  //   );
-  //   formDataToSend.append(
-  //     "EndDate",
-  //     formData.endDate || new Date().toISOString()
-  //   );
+    // ✅ Basic fields
+    formDataToSend.append("Id", 0);
+    formDataToSend.append("Name", formData.name || "");
+    formDataToSend.append("Description", formData.description || "");
+    formDataToSend.append(
+      "RequiredAmount",
+      parseFloat(formData.requiredAmount) || 0
+    );
+    formDataToSend.append(
+      "RaisedAmount",
+      parseFloat(formData.raisedAmount) || 0
+    );
+    formDataToSend.append(
+      "StartDate",
+      formData.startDate || new Date().toISOString()
+    );
+    formDataToSend.append(
+      "EndDate",
+      formData.endDate || new Date().toISOString()
+    );
 
-  //   formDataToSend.append("Status", true);
-  //   formDataToSend.append("IsCompaignDeleted", false);
-  //   formDataToSend.append("IsCompaignLaunch", true);
-  //   formDataToSend.append("IsApproved", false);
+    formDataToSend.append("Status", true);
+    formDataToSend.append("IsCompaignDeleted", false);
+    formDataToSend.append("IsCompaignLaunch", true);
+    formDataToSend.append("IsApproved", false);
 
-  //   formDataToSend.append("AssignedToId", formData.assignedToId || "");
-  //   formDataToSend.append("AssignedToName", formData.assignedToName || "Admin");
-  //   formDataToSend.append("CreatedDate", new Date().toISOString());
-  //   formDataToSend.append("CreatedByName", "Admin");
-  //   formDataToSend.append("UpdatedDate", new Date().toISOString());
-  //   formDataToSend.append("UpdatedByName", "Admin");
+    formDataToSend.append("AssignedToId", formData.assignedToId || "");
+    formDataToSend.append("AssignedToName", formData.assignedToName || "Admin");
+    formDataToSend.append("CreatedDate", new Date().toISOString());
+    formDataToSend.append("CreatedByName", "Admin");
+    formDataToSend.append("UpdatedDate", new Date().toISOString());
+    formDataToSend.append("UpdatedByName", "Admin");
 
-  //   // ✅ File array (UploadImages)
-  //   images.forEach((img) => {
-  //     if (img.file) {
-  //       formDataToSend.append("UploadImages", img.file);
-  //     }
-  //   });
+    // ✅ File array (UploadImages)
+    images.forEach((img) => {
+      if (img.file) {
+        formDataToSend.append("UploadImages", img.file);
+      }
+    });
 
-  //   // ✅ ImagePaths (if you allow pre-existing images)
-  //   // Example: formDataToSend.append("ImagePaths", "/Images/old.png");
+    // ✅ ImagePaths (if you allow pre-existing images)
+    // Example: formDataToSend.append("ImagePaths", "/Images/old.png");
 
-  //   // ✅ Arrays (append multiple values if selected)
-  //   formData.selectedProducts?.forEach((id) => {
-  //     formDataToSend.append("ProductIds", id);
-  //   });
+    // ✅ Arrays (append multiple values if selected)
+    formData.selectedProducts?.forEach((id) => {
+      formDataToSend.append("ProductIds", id);
+    });
 
-  //   formData.selectedGroups?.forEach((id) => {
-  //     formDataToSend.append("GroupIds", id);
-  //   });
+    formData.selectedGroups?.forEach((id) => {
+      formDataToSend.append("GroupIds", id);
+    });
 
-  //   formData.selectedOrganizers?.forEach((id) => {
-  //     formDataToSend.append("OrganizerIds", id);
-  //   });
+    formData.selectedOrganizers?.forEach((id) => {
+      formDataToSend.append("OrganizerIds", id);
+    });
 
-  //   // ✅ Complex objects (must be appended as stringified JSON, one per array element)
-  //   // formDataToSend.append(
-  //   //   "CompaignProducts",
-  //   //   JSON.stringify({ id: 0, name: "string" })
-  //   // );
-  //   // formDataToSend.append(
-  //   //   "CompaignGroups",
-  //   //   JSON.stringify({ id: 0, name: "string" })
-  //   // );
-  //   // formDataToSend.append(
-  //   //   "CompaignOrganizers",
-  //   //   JSON.stringify({ id: "string", name: "string" })
-  //   // );
+    // ✅ Complex objects (must be appended as stringified JSON, one per array element)
+    // formDataToSend.append(
+    //   "CompaignProducts",
+    //   JSON.stringify({ id: 0, name: "string" })
+    // );
+    // formDataToSend.append(
+    //   "CompaignGroups",
+    //   JSON.stringify({ id: 0, name: "string" })
+    // );
+    // formDataToSend.append(
+    //   "CompaignOrganizers",
+    //   JSON.stringify({ id: "string", name: "string" })
+    // );
 
-  //   formDataToSend.append("ProductIds", []);
-  //   formDataToSend.append("GroupIds", []);
-  //   formDataToSend.append("OrganizerIds", []);
+    formDataToSend.append("ProductIds", []);
+    formDataToSend.append("GroupIds", []);
+    formDataToSend.append("OrganizerIds", []);
 
-  //   try {
-  //     const response = await AddCompaignPost(formDataToSend);
-  //     console.log("Campaign BIlal", response);
-  //   } catch (error) {
-  //     console.error("Error saving campaign:", error);
-  //   }
-  // };
+    try {
+      const response = await createCampaign(formDataToSend, token);
+      console.log("Campaign BIlal", response);
+    } catch (error) {
+      console.error("Error saving campaign:", error);
+    }
+  };
 
   return (
     <>
@@ -357,7 +363,10 @@ const AddCompaign = () => {
                               <input
                                 type="text"
                                 className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                value={formData.assignedToName || "No organizer assigned"}
+                                value={
+                                  formData.assignedToName ||
+                                  "No organizer assigned"
+                                }
                                 readOnly
                                 disabled
                               />
@@ -397,36 +406,36 @@ const AddCompaign = () => {
                           </div>
                           <div className="col-lg-6 col-sm-12">
                             <div className="row">
-                                                                <div className="col-lg-6 col-sm-12">
-                                    <div className="form-group">
-                                      <label className="color-dark fs-14 fw-500 align-center">
-                                        Start Date
-                                      </label>
-                                      <input
-                                        id="startDate"
-                                        type="date"
-                                        className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                        name="startDate"
-                                        value={formData.startDate}
-                                        onChange={handleChange}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="col-lg-6 col-sm-12">
-                                    <div className="form-group">
-                                      <label className="color-dark fs-14 fw-500 align-center">
-                                        End Date
-                                      </label>
-                                      <input
-                                        id="endDate"
-                                        type="date"
-                                        className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                        name="endDate"
-                                        value={formData.endDate}
-                                        onChange={handleChange}
-                                      />
-                                    </div>
-                                  </div>
+                              <div className="col-lg-6 col-sm-12">
+                                <div className="form-group">
+                                  <label className="color-dark fs-14 fw-500 align-center">
+                                    Start Date
+                                  </label>
+                                  <input
+                                    id="startDate"
+                                    type="date"
+                                    className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                    name="startDate"
+                                    value={formData.startDate}
+                                    onChange={handleChange}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-6 col-sm-12">
+                                <div className="form-group">
+                                  <label className="color-dark fs-14 fw-500 align-center">
+                                    End Date
+                                  </label>
+                                  <input
+                                    id="endDate"
+                                    type="date"
+                                    className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                    name="endDate"
+                                    value={formData.endDate}
+                                    onChange={handleChange}
+                                  />
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -435,12 +444,26 @@ const AddCompaign = () => {
                           <h6 className="text-muted">Debug Information:</h6>
                           <div className="row">
                             <div className="col-md-6">
-                              <small><strong>Assigned To ID:</strong> {formData.assignedToId || "Not set"}</small><br/>
-                              <small><strong>Assigned To Name:</strong> {formData.assignedToName || "Not set"}</small>
+                              <small>
+                                <strong>Assigned To ID:</strong>{" "}
+                                {formData.assignedToId || "Not set"}
+                              </small>
+                              <br />
+                              <small>
+                                <strong>Assigned To Name:</strong>{" "}
+                                {formData.assignedToName || "Not set"}
+                              </small>
                             </div>
                             <div className="col-md-6">
-                              <small><strong>Start Date:</strong> {formData.startDate || "Not set"}</small><br/>
-                              <small><strong>End Date:</strong> {formData.endDate || "Not set"}</small>
+                              <small>
+                                <strong>Start Date:</strong>{" "}
+                                {formData.startDate || "Not set"}
+                              </small>
+                              <br />
+                              <small>
+                                <strong>End Date:</strong>{" "}
+                                {formData.endDate || "Not set"}
+                              </small>
                             </div>
                           </div>
                         </div>
@@ -453,7 +476,7 @@ const AddCompaign = () => {
                             Save Draft
                           </button>
                           <button
-                            // onClick={CampaignPost}
+                            onClick={CampaignPost}
                             type="button"
                             className="btn primary-btn btn-default btn-squared px-30"
                           >

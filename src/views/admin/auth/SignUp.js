@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const SignUp = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
   // const [middleName, setmiddleName] = useState("");
@@ -34,6 +35,8 @@ const SignUp = () => {
 
   const registerUser = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const data = {
       firstName,
       lastName,
@@ -57,6 +60,9 @@ const SignUp = () => {
       } else {
         showErrorsInToast(backendErrors);
       }
+    } finally {
+      setIsLoading(false);
+      // Stop loading in all cases
     }
   };
 
@@ -84,7 +90,7 @@ const SignUp = () => {
                   </p>
                 </div>
                 <div className="custom_form">
-                  <form>
+                  <form onSubmit={registerUser}>
                     <div className="row">
                       <div className="col-6">
                         <label className="form-label">First Name</label>
@@ -146,11 +152,17 @@ const SignUp = () => {
                     </div>
 
                     <button
-                      onClick={registerUser}
                       type="submit"
                       className="btn register"
+                      disabled={isLoading}
                     >
-                      Sign up
+                      {isLoading ? (
+                        <span>
+                          <span className="spinner"></span> Signing Up...
+                        </span>
+                      ) : (
+                        "Sign Up"
+                      )}
                     </button>
                     <p className="login-btn">
                       Already have an account? <Link to="/login">Log in</Link>

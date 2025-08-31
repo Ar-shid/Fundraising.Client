@@ -74,25 +74,33 @@
       align-items: center;
       margin: 0 -12px;
       li {
-        padding: 20px 12px;
+        padding: 10px 12px;
       }
       .nav-item-toggle {
         position: relative;
         color: #9299b8;
-        &::before {
-          position: absolute;
-          content: "";
-          width: 5px;
-          height: 5px;
-          -webkit-border-radius: 50%;
-          border-radius: 50%;
-          left: 50%;
-          -webkit-transform: translateX(-50%);
-          -ms-transform: translateX(-50%);
-          transform: translateX(-50%);
-          top: -7px;
-          background: #20c997;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        h4 {
+          font-weight: 600;
+          font-size: 18.9px;
+          color: #16192c;
         }
+        // &::before {
+        //   position: absolute;
+        //   content: "";
+        //   width: 5px;
+        //   height: 5px;
+        //   -webkit-border-radius: 50%;
+        //   border-radius: 50%;
+        //   left: 50%;
+        //   -webkit-transform: translateX(-50%);
+        //   -ms-transform: translateX(-50%);
+        //   transform: translateX(-50%);
+        //   top: -7px;
+        //   background: #20c997;
+        // }
       }
       .dropdown-wrapper__title {
         margin: 10px;
@@ -212,4 +220,60 @@
       }
     }
   }
+}
+
+.navbar-right__menu .nav-author__info {
+  background: #f4f5f7;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  margin: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 20px 25px;
+}
+.navbar-right__menu .nav-author__info .author-img {
+  margin-right: 15px;
+}
+.navbar-right__menu .nav-author__info .author-img img {
+  max-width: 40px;
+}
+.navbar-right__menu .nav-author__info h6 {
+  font-weight: 500;
+  font-size: 16px;
+}
+.navbar-right__menu .nav-author__info span {
+  font-size: 14px;
+}
+.navbar-right__menu .nav-author__options ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 15px;
+}
+
+.navbar-right__menu .nav-author__options ul li a {
+  font-size: 16px;
+  display: block;
+  color: #9299b8;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.navbar-right__menu .nav-author__options ul li a svg {
+  width: 18px;
+  margin-right: 12px;
+}
+.navbar-right__menu .nav-author__signout {
+  font-size: 13px;
+  background: #f8f9fb;
+  padding: 18px 15px;
+  color: #868eae;
+  display: block;
+  text-align: center;
+  font-weight: 500;
+  width: 100%;
+  border: none;
 }

@@ -140,6 +140,49 @@ h6 {
   border-radius: 5px;
   color: var(--primary-color);
 }
+.setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #898989;
+  padding-bottom: 40px;
+}
+.setting h4 {
+  font-weight: 600;
+  font-size: 16px;
+  color: #202020;
+  margin-bottom: 10px;
+}
+.setting p {
+  font-weight: 400;
+  font-size: 14px;
+  color: #898989;
+  margin: 0px;
+}
+.setting .email {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 5px;
+  padding: 5px 20px;
+}
+.setting.withbg {
+  background: #f9f9f9;
+  padding: 40px 20px;
+  border-radius: 10px;
+  border: none;
+}
+.setting.withbg .left {
+  display: flex;
+  gap: 20px;
+}
+.setting.withbg .email {
+  background-color: var(--primary-color);
+  padding: 5px 15px;
+  color: #000;
+}
 @import "var";
 @import "admin/auth/signup";
 @import "admin/layout/adminheader";
@@ -147,3 +190,6 @@ h6 {
 @import "admin/home";
 @import "admin/campaign";
 @import "admin/modal";
+@import "admin/table";
+@import "admin/chart";
+@import "admin/shimmer";

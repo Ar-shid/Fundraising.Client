@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 import { getAllGroups, getGroupById } from "../../../../api/Group/Group";
 import { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import Modal from "react-bootstrap/Modal";
 import React from "react";
 const GroupCard = () => {
   const [group, setGroups] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -21,6 +23,8 @@ const GroupCard = () => {
         setGroups(res.data);
       } catch (err) {
         console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false); // stop shimmer
       }
     };
     fetchGroups();
@@ -49,62 +53,87 @@ const GroupCard = () => {
         onHide={() => setModalShow(false)}
         group={selectedGroup}
       />
-      {group.map((group) => (
-        <div
-          className="cus-xl-3 col-lg-3 col-md-11 col-12 mb-30 px-10"
-          key={group.id}
-        >
-          <div className="card campaign-card group-card product product--grid">
-            <div className="h-100">
-              <div className="product-item">
-                <div className="product-item__image">
-                  <Link to="">
-                    <img
-                      className="card-img-top img-fluid"
-                      // src="./img/group.png"
-                      src={
-                        group.logoPath
-                          ? `http://192.169.177.4${group.logoPath}` // ✅ base URL + relative path
-                          : "./img/group.png"
-                      }
-                      // alt={group.name}
-                    />
-                  </Link>
-                </div>
-                <div className="card-body px-20 pb-25 pt-20">
-                  <div className="product-item__body text-capitalize">
-                    <Link to="">
-                      <h6 className="card-title">{group.name}</h6>
-                      <h6 className="card-desc">
-                        {group.description || "No description"}
-                      </h6>
-                    </Link>
-                    <div className="product-item__button d-flex mt-20 flex-wrap">
-                      <button
-                        onClick={() => handleViewGroup(group.id)}
-                        className="btn btn-update"
-                      >
-                        View Group
-                      </button>
-                    </div>
-                    <div className="d-flex product-desc-price align-items-center mb-10 flex-wrap">
-                      <div>
-                        <span>Total Members </span>
-                        <h4>100</h4>
-                      </div>
 
-                      <div>
-                        <span>Goals</span>
-                        <h4>$150,234</h4>
+      {loading
+        ? Array(8) // 👈 show 4 shimmer cards
+            .fill()
+            .map((_, idx) => (
+              <div
+                className="cus-xl-3 col-lg-3 col-md-11 col-12 mb-30 px-10"
+                key={idx}
+              >
+                <div className="card campaign-card product product--grid">
+                  <div className="h-100">
+                    <Skeleton height={200} /> {/* image skeleton */}
+                    <div className="card-body px-20 pb-25 pt-20">
+                      <Skeleton width={`80%`} height={20} />
+                      <Skeleton width={`60%`} height={20} />
+                      <Skeleton width={`40%`} height={20} />
+                      <div className="d-flex mt-20">
+                        <Skeleton width={100} height={35} className="mr-2" />
+                        <Skeleton width={50} height={35} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+        : group.map((group) => (
+            <div
+              className="cus-xl-3 col-lg-3 col-md-11 col-12 mb-30 px-10"
+              key={group.id}
+            >
+              <div className="card campaign-card group-card product product--grid">
+                <div className="h-100">
+                  <div className="product-item">
+                    <div className="product-item__image">
+                      <Link to="">
+                        <img
+                          className="card-img-top img-fluid"
+                          // src="./img/group.png"
+                          src={
+                            group.logoPath
+                              ? `http://192.169.177.4${group.logoPath}` // ✅ base URL + relative path
+                              : "./img/group.png"
+                          }
+                          // alt={group.name}
+                        />
+                      </Link>
+                    </div>
+                    <div className="card-body px-20 pb-25 pt-20">
+                      <div className="product-item__body text-capitalize">
+                        <Link to="">
+                          <h6 className="card-title">{group.name}</h6>
+                          <h6 className="card-desc">
+                            {group.description || "No description"}
+                          </h6>
+                        </Link>
+                        <div className="product-item__button d-flex mt-20 flex-wrap">
+                          <button
+                            onClick={() => handleViewGroup(group.id)}
+                            className="btn btn-update"
+                          >
+                            View Group
+                          </button>
+                        </div>
+                        <div className="d-flex product-desc-price align-items-center mb-10 flex-wrap">
+                          <div>
+                            <span>Total Members </span>
+                            <h4>100</h4>
+                          </div>
+
+                          <div>
+                            <span>Goals</span>
+                            <h4>$150,234</h4>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      ))}
+          ))}
     </>
   );
 };
