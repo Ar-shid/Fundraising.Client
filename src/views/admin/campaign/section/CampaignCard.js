@@ -82,8 +82,9 @@ const CampaignCard = () => {
                         <img
                           className="card-img-top img-fluid"
                           src={
-                            campaign.imagePaths
-                              ? `http://192.169.177.4${campaign.imagePaths}`
+                            campaign.imagePaths &&
+                            campaign.imagePaths.length > 0
+                              ? `http://192.169.177.4${campaign.imagePaths[0]}`
                               : "./img/campaign.png"
                           }
                           alt=""

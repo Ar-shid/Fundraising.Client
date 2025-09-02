@@ -42,22 +42,6 @@ const AddGroup = ({ token }) => {
     ProductIds: [],
   });
 
-  // Get DropDOwn Value Product IDS Start
-  // const handleSelectChange = (selected) => {
-  //   setSelectedOptions(selected);
-
-  //   const productId = selected.map((opt) => Number(opt.value));
-  //   const creatorName = selected.length > 0 ? selected[0].createdByName : "";
-  //   const updaterName = selected.length > 0 ? selected[0].UpdatedByName : "";
-
-  //   setGroupForm((prev) => ({
-  //     ...prev,
-  //     GroupProducts: productId,
-  //     CreatedByName: creatorName,
-  //     UpdatedByName: updaterName,
-  //   }));
-  // };
-
   const handleSelectChange = (selected) => {
     setSelectedOptions(selected);
 

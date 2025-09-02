@@ -8,11 +8,11 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
-  // const [middleName, setmiddleName] = useState("");
-  // const [userName, setuserName] = useState("");
+  const [middleName, setmiddleName] = useState("");
+  const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [roles, setRoles] = useState(["admin"]);
+  const [role, setRole] = useState("");
 
   const showErrorsInToast = (errors) => {
     if (Array.isArray(errors)) {
@@ -40,11 +40,11 @@ const SignUp = () => {
     const data = {
       firstName,
       lastName,
-      // middleName,
-      // userName,
+      middleName: middleName || "",
+      userName: email,
       email,
       password,
-      // roles,
+      roles: [role],
     };
 
     try {
@@ -85,8 +85,9 @@ const SignUp = () => {
                 <div className="text-center">
                   <h4>Welcome back to fundraising</h4>
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor i
+                    Welcome to your fundraising app – the smarter way to connect
+                    with the right programs, manage your campaigns, and achieve
+                    your goals with ease.
                   </p>
                 </div>
                 <div className="custom_form">
@@ -123,9 +124,14 @@ const SignUp = () => {
                         />
                       </div>
                       <div className="col-12">
-                        <select className="form-control">
+                        <select
+                          className="form-control"
+                          value={role}
+                          onChange={(e) => setRole(e.target.value)}
+                        >
                           <option>Your Role</option>
-                          <option>Admin</option>
+                          <option value="Sales Person">Sale Person</option>
+                          <option value="Organizer">Organizer</option>
                         </select>
                       </div>
                       <div className="col-12">

@@ -225,6 +225,10 @@ h6 {
   color: #000;
 }
 
+.css-13cymwt-control {
+  height: 58px;
+}
+
 :root {
   --primary-color: #00bab5;
   --black-color: #000;
@@ -384,6 +388,16 @@ section.auth .left-content .custom_form form p.login-btn {
 }
 section.auth .left-content .custom_form form p.login-btn a {
   color: var(--primary-color);
+}
+
+.custom_form .pass {
+  position: relative;
+}
+
+.custom_form span.forgot {
+  position: absolute;
+  right: 25px;
+  top: 37px;
 }
 
 .header-top {

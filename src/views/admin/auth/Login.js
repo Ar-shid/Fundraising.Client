@@ -104,8 +104,9 @@ const Login = () => {
                 <div className="text-center">
                   <h4>Welcome back to fundraising</h4>
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor i
+                    Welcome to your fundraising app – the smarter way to connect
+                    with the right programs, manage your campaigns, and achieve
+                    your goals with ease.
                   </p>
                 </div>
                 <div className="custom_form">
@@ -121,19 +122,12 @@ const Login = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
-                      <div className="col-12">
-                        <div className="d-flex justify-content-between align-items-center">
+                      <div className="col-12 pass">
+                        <div className="d-flex  justify-content-between align-items-center">
                           <label className="form-label">Password</label>
                           {/* <Link to="/" className="forgot">
                             Forgot password?
                           </Link> */}
-
-                          <span
-                            className="forgot"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? "Hide Password" : "Show Password"}
-                          </span>
                         </div>
                         <input
                           type={showPassword ? "text" : "password"}
@@ -142,6 +136,24 @@ const Login = () => {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                         />
+                        <span
+                          className="forgot"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <img
+                              src="./img/icon/hide.png"
+                              style={{ width: "24px" }}
+                              alt=""
+                            />
+                          ) : (
+                            <img
+                              src="./img/icon/show.png"
+                              style={{ width: "24px" }}
+                              alt=""
+                            />
+                          )}
+                        </span>
                       </div>
 
                       <div class="stylish-checkbox">

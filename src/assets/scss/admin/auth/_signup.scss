@@ -129,3 +129,11 @@ section.auth {
     }
   }
 }
+.custom_form .pass {
+  position: relative;
+}
+.custom_form span.forgot {
+  position: absolute;
+  right: 25px;
+  top: 37px;
+}

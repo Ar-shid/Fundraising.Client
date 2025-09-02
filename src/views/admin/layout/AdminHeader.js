@@ -1,17 +1,40 @@
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AdminHeader = () => {
   const navigate = useNavigate();
-  const handleSignOut = () => {
-    // remove token / user data
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+  // const handleSignOut = () => {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("user");
 
-    // redirect to login page
-    navigate("/login");
+  //   navigate("/login");
+  // };
+
+  const handleSignOut = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, sign me out",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        Swal.fire("Signed Out!", "You have been logged out.", "success").then(
+          () => {
+            navigate("/login");
+          }
+        );
+      }
+    });
   };
+
   const token = localStorage.getItem("token");
   let email = "";
   let name = "";

@@ -15,7 +15,7 @@ const AdminUser = () => {
               <div className="col-lg-12">
                 <div className="breadcrumb-main">
                   <h4 className="text-capitalize breadcrumb-title">Users</h4>
-                  <Link to="/add-product" className="PrimaryBtn">
+                  <Link to="" className="PrimaryBtn">
                     Add User
                     <svg
                       className="ms-3"
@@ -33,9 +33,9 @@ const AdminUser = () => {
                   </Link>
                 </div>
               </div>
-              <UserScoreCard />
-              <UserTable />
             </div>
+            {/* <UserScoreCard /> */}
+            <UserTable />
           </div>
         </div>
       </main>

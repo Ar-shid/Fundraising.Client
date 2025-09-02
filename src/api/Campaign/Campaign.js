@@ -11,23 +11,16 @@ export const getAllCampaigns = async (token) => {
 };
 
 // POST /api/Compaign - Create new campaign (Form data)
-export const createCampaign = async (campaignData, token) => {
-  // Debug: Log what's being sent to the API
-  console.log('API Function - campaignData:', campaignData);
-  if (campaignData instanceof FormData) {
-    console.log('API Function - FormData contents:');
-    for (let [key, value] of campaignData.entries()) {
-      console.log(`${key}:`, value);
-    }
-  }
 
+export const createCampaign = async (campaignData, token) => {
   const { data } = await invoke({
     url: `/api/Compaign`,
     method: "POST",
     data: campaignData,
     token,
-    // Note: Don't set Content-Type for FormData, let the browser set it automatically
-    // with the correct boundary
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
   return data;
 };
