@@ -125,9 +125,9 @@ const Login = () => {
                       <div className="col-12 pass">
                         <div className="d-flex  justify-content-between align-items-center">
                           <label className="form-label">Password</label>
-                          {/* <Link to="/" className="forgot">
+                          <Link to="/forgot-password" className="forgot">
                             Forgot password?
-                          </Link> */}
+                          </Link>
                         </div>
                         <input
                           type={showPassword ? "text" : "password"}

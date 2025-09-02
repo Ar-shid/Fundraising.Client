@@ -7,6 +7,8 @@ import {
 
 import Login from "./views/admin/auth/Login";
 import SignUp from "./views/admin/auth/SignUp";
+import ForgotPass from "./views/admin/auth/ForgotPass";
+import ResetPassword from "./views/admin/auth/ResetPass";
 import AdminHome from "./views/admin/home";
 import AdminCampaign from "./views/admin/campaign";
 import AddCompaign from "./views/admin/campaign/pages/AddCompaign";
@@ -30,6 +32,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPass />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/register" element={<SignUp />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route
