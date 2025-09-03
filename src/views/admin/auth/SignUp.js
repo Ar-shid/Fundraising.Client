@@ -5,13 +5,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const SignUp = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
-  // const [middleName, setmiddleName] = useState("");
-  // const [userName, setuserName] = useState("");
+  const [middleName, setmiddleName] = useState("");
+  const [userName, setuserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [roles, setRoles] = useState(["admin"]);
+  const [role, setRole] = useState("");
 
   const showErrorsInToast = (errors) => {
     if (Array.isArray(errors)) {
@@ -34,14 +35,16 @@ const SignUp = () => {
 
   const registerUser = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const data = {
       firstName,
       lastName,
-      // middleName,
-      // userName,
+      middleName: middleName || "",
+      userName: email,
       email,
       password,
-      // roles,
+      roles: [role],
     };
 
     try {
@@ -57,6 +60,9 @@ const SignUp = () => {
       } else {
         showErrorsInToast(backendErrors);
       }
+    } finally {
+      setIsLoading(false);
+      // Stop loading in all cases
     }
   };
 
@@ -79,12 +85,13 @@ const SignUp = () => {
                 <div className="text-center">
                   <h4>Welcome back to fundraising</h4>
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor i
+                    Welcome to your fundraising app – the smarter way to connect
+                    with the right programs, manage your campaigns, and achieve
+                    your goals with ease.
                   </p>
                 </div>
                 <div className="custom_form">
-                  <form>
+                  <form onSubmit={registerUser}>
                     <div className="row">
                       <div className="col-6">
                         <label className="form-label">First Name</label>
@@ -117,9 +124,14 @@ const SignUp = () => {
                         />
                       </div>
                       <div className="col-12">
-                        <select className="form-control">
+                        <select
+                          className="form-control"
+                          value={role}
+                          onChange={(e) => setRole(e.target.value)}
+                        >
                           <option>Your Role</option>
-                          <option>Admin</option>
+                          <option value="Sales Person">Sale Person</option>
+                          <option value="Organizer">Organizer</option>
                         </select>
                       </div>
                       <div className="col-12">
@@ -146,11 +158,17 @@ const SignUp = () => {
                     </div>
 
                     <button
-                      onClick={registerUser}
                       type="submit"
                       className="btn register"
+                      disabled={isLoading}
                     >
-                      Sign up
+                      {isLoading ? (
+                        <span>
+                          <span className="spinner"></span> Signing Up...
+                        </span>
+                      ) : (
+                        "Sign Up"
+                      )}
                     </button>
                     <p className="login-btn">
                       Already have an account? <Link to="/login">Log in</Link>

@@ -12,7 +12,7 @@ const AddGroup = ({ token }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const [images, setImages] = React.useState([]);
-  const maxNumber = 69;
+  const maxNumber = 1;
 
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
@@ -25,48 +25,33 @@ const AddGroup = ({ token }) => {
   };
 
   const [groupForm, setGroupForm] = useState({
-    Id: "",
+    Id: 0,
     Name: "",
     Description: "",
     LogoPath: "",
     Status: 1,
-    isApproved: true,
-    isDraft: false,
+    isApproved: false,
+    isDraft: true,
     CreatedDate: new Date().toISOString(),
     CreatedByName: "",
     UpdatedDate: new Date().toISOString(),
     UpdatedByName: "",
     UploadImage: "",
     GroupMembers: [],
+    GroupProducts: [],
+    ProductIds: [],
   });
-
-  // const handleSelectChange = (selected) => {
-  //   setSelectedOptions(selected);
-
-  //   // update GroupMembers in form
-  //   setGroupForm((prev) => ({
-  //     ...prev,
-  //     GroupMembers: selected
-  //       ? selected.map((opt) => ({
-  //           productId: opt.value,
-  //           productName: opt.label,
-  //         }))
-  //       : [],
-  //   }));
-  // };
 
   const handleSelectChange = (selected) => {
     setSelectedOptions(selected);
 
-    const memberIds = selected.map((opt) => Number(opt.value));
-    const creatorName = selected.length > 0 ? selected[0].createdByName : "";
-    const updaterName = selected.length > 0 ? selected[0].UpdatedByName : "";
+    const ProductIds = selected.map((opt) => ({
+      productId: Number(opt.value),
+    }));
 
     setGroupForm((prev) => ({
       ...prev,
-      GroupMembers: memberIds,
-      CreatedByName: creatorName,
-      UpdatedByName: updaterName,
+      ProductIds: ProductIds,
     }));
   };
 
@@ -77,21 +62,38 @@ const AddGroup = ({ token }) => {
       [name]: value,
     }));
   };
-  const [responses, setResponses] = useState({});
+
+  // Get DropDOwn Value Product IDS End
+
+  // const [responses, setResponses] = useState({});
 
   const handleCreateGroup = async (e) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
     e.preventDefault();
     try {
       const formData = new FormData();
 
       // Append all group fields to FormData
       Object.keys(groupForm).forEach((key) => {
-        if (key === "UploadImage" && groupForm[key] instanceof File) {
+        // if (key === "UploadImage" && groupForm[key] instanceof File)
+        if (key === "UploadImage" && Array.isArray(groupForm[key])) {
           // Handle UploadImage as file
-          formData.append(key, groupForm[key]);
-        } else if (key === "GroupMembers" && Array.isArray(groupForm[key])) {
+          // formData.append(key, groupForm[key]);
+
+          groupForm[key].forEach((file) => {
+            console.log("File", file); // 👈 this will log each File object
+            formData.append("UploadImage", file);
+          });
+        } else if (key === "ProductIds" && Array.isArray(groupForm[key])) {
           // Handle GroupMembers array
-          formData.append(key, JSON.stringify(groupForm[key]));
+
+          const productIds = groupForm[key].map((p) => p.productId);
+          formData.append("ProductIds", JSON.stringify(productIds));
+
+          // formData.append(key, JSON.stringify(groupForm[key]));
+
+          // formData.append("GroupProducts", JSON.stringify(groupForm[key]));
 
           // const members = groupForm[key].join(",");
           // formData.append(key, members);
@@ -104,15 +106,18 @@ const AddGroup = ({ token }) => {
       });
 
       const response = await createGroup(formData, token);
-      setResponses((prev) => ({
-        ...prev,
-        createGroup: { success: true, data: response.data },
-      }));
+
+      console.log("Group Post Data", response);
+
+      // setResponses((prev) => ({
+      //   ...prev,
+      //   createGroup: { success: true, data: response.data },
+      // }));
     } catch (error) {
-      setResponses((prev) => ({
-        ...prev,
-        createGroup: { success: false, error: error.message },
-      }));
+      // setResponses((prev) => ({
+      //   ...prev,
+      //   createGroup: { success: false, error: error.message },
+      // }));
     }
   };
 
@@ -122,8 +127,6 @@ const AddGroup = ({ token }) => {
       if (!token) return;
       try {
         const res = await getAllProducts(token);
-
-        console.log("Fuck", res);
         // map API data to react-select format
         const formatted = res.data.map((p) => ({
           value: p.id,
@@ -218,7 +221,6 @@ const AddGroup = ({ token }) => {
                           </label>
 
                           <ImageUploading
-                            multiple
                             value={images}
                             onChange={onChange}
                             maxNumber={maxNumber}

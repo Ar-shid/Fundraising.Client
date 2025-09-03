@@ -25,6 +25,8 @@ const showErrorsInToast = (errors) => {
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const runTests = async () => {
@@ -38,6 +40,7 @@ const Login = () => {
 
   const loginUser = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const data = {
       email,
       password,
@@ -49,7 +52,7 @@ const Login = () => {
       const token = response?.data?.token; // if you're using axios
 
       localStorage.setItem("token", token);
-      
+
       // Fetch organizers after successful login
       try {
         const organizersResponse = await getOrganizers(token);
@@ -64,7 +67,7 @@ const Login = () => {
         console.error("Error fetching organizers:", organizerError);
         // Don't block login if organizers fetch fails
       }
-      
+
       toast.success("LogIn successfully!");
       navigate("/admin-home");
     } catch (error) {
@@ -78,7 +81,7 @@ const Login = () => {
       }
       console.log("loginUser error:", e);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
       // Stop loading in all cases
     }
   };
@@ -101,12 +104,13 @@ const Login = () => {
                 <div className="text-center">
                   <h4>Welcome back to fundraising</h4>
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor i
+                    Welcome to your fundraising app – the smarter way to connect
+                    with the right programs, manage your campaigns, and achieve
+                    your goals with ease.
                   </p>
                 </div>
                 <div className="custom_form">
-                  <form>
+                  <form onSubmit={loginUser}>
                     <div className="row">
                       <div className="col-12">
                         <label className="form-label">Email Address</label>
@@ -118,21 +122,40 @@ const Login = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
-                      <div className="col-12">
-                        <div className="d-flex justify-content-between align-items-center">
+                      <div className="col-12 pass">
+                        <div className="d-flex  justify-content-between align-items-center">
                           <label className="form-label">Password</label>
-                          <Link to="/" className="forgot">
+                          <Link to="/forgot-password" className="forgot">
                             Forgot password?
                           </Link>
                         </div>
                         <input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           className="form-control field"
                           placeholder="Enter Password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                         />
+                        <span
+                          className="forgot"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <img
+                              src="./img/icon/hide.png"
+                              style={{ width: "24px" }}
+                              alt=""
+                            />
+                          ) : (
+                            <img
+                              src="./img/icon/show.png"
+                              style={{ width: "24px" }}
+                              alt=""
+                            />
+                          )}
+                        </span>
                       </div>
+
                       <div class="stylish-checkbox">
                         <input
                           type="checkbox"
@@ -147,11 +170,17 @@ const Login = () => {
                     </div>
 
                     <button
-                      onClick={loginUser}
-                      // type="submit"
+                      type="submit"
                       className="btn register"
+                      disabled={isLoading}
                     >
-                      Login
+                      {isLoading ? (
+                        <span>
+                          <span className="spinner"></span> Logging in...
+                        </span>
+                      ) : (
+                        "Login"
+                      )}
                     </button>
                     <p className="login-btn">
                       Don’t have an account?{" "}

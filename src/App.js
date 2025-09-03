@@ -1,7 +1,14 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
 import Login from "./views/admin/auth/Login";
 import SignUp from "./views/admin/auth/SignUp";
+import ForgotPass from "./views/admin/auth/ForgotPass";
+import ResetPassword from "./views/admin/auth/ResetPass";
 import AdminHome from "./views/admin/home";
 import AdminCampaign from "./views/admin/campaign";
 import AddCompaign from "./views/admin/campaign/pages/AddCompaign";
@@ -10,6 +17,11 @@ import AddGroup from "./views/admin/group/pages/AddGroup";
 import AdminProduct from "./views/admin/product";
 import AddProduct from "./views/admin/product/pages/AddProduct";
 import ProtectedRoute from "./views/admin/auth/ProtectedRoute";
+import AdminUser from "./views/admin/user";
+import AdminFinance from "./views/admin/finance";
+import AdminSetting from "./views/admin/setting";
+import Profile from "./views/admin/setting/pages/Profile";
+import AdminOrder from "./views/admin/order";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/scss/style.css";
 import "./assets/scss/test.css";
@@ -20,7 +32,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPass />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/register" element={<SignUp />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route
             path="/admin-home"
             element={
@@ -74,6 +89,46 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddProduct />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-user"
+            element={
+              <ProtectedRoute>
+                <AdminUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-finance"
+            element={
+              <ProtectedRoute>
+                <AdminFinance />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-setting"
+            element={
+              <ProtectedRoute>
+                <AdminSetting />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-order"
+            element={
+              <ProtectedRoute>
+                <AdminOrder />
               </ProtectedRoute>
             }
           />

@@ -241,7 +241,10 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li className="">
-              <a href="#">
+              <NavLink
+                to="/admin-user"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
                 <svg
                   className="nav-icon"
                   viewBox="0 0 25 25"
@@ -291,7 +294,7 @@ const Sidebar = () => {
                 </svg>
 
                 <span className="menu-text">Users</span>
-              </a>
+              </NavLink>
             </li>
             <li className="">
               <NavLink
@@ -314,7 +317,10 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li className="">
-              <a href="#">
+              <NavLink
+                to="/admin-finance"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
                 <svg
                   className="nav-icon"
                   viewBox="0 0 23 24"
@@ -360,10 +366,13 @@ const Sidebar = () => {
                 </svg>
 
                 <span className="menu-text">Finance </span>
-              </a>
+              </NavLink>
             </li>
             <li className="">
-              <a href="#">
+              <NavLink
+                to="/admin-order"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
                 <svg
                   className="nav-icon"
                   viewBox="0 0 23 23"
@@ -404,11 +413,15 @@ const Sidebar = () => {
                   />
                 </svg>
 
-                <span className="menu-text">Reports</span>
-              </a>
+                <span className="menu-text">Orders</span>
+              </NavLink>
             </li>
+
             <li className="">
-              <a href="#">
+              <NavLink
+                to="/admin-setting"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
                 <span data-feather="home" />
 
                 <svg
@@ -424,7 +437,7 @@ const Sidebar = () => {
                 </svg>
 
                 <span className="menu-text">Settings</span>
-              </a>
+              </NavLink>
             </li>
           </ul>
         </div>

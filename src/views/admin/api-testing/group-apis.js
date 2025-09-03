@@ -167,7 +167,6 @@ const GroupAPIsPage = ({ token }) => {
         type={type}
         value={value}
         onChange={onChange}
-        required={required}
         placeholder={placeholder}
         className="form-control"
       />

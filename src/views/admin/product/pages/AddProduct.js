@@ -1,8 +1,105 @@
 import AdminHeader from "../../layout/AdminHeader";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import ImageUploading from "react-images-uploading";
+import React, { useState, useEffect } from "react";
+import { createProduct } from "../../../../api/Product/Porduct";
+import { getAllCategory } from "../../../../api/Category/Category";
+import { toast } from "react-toastify";
 
 const AddProduct = ({ token }) => {
+  const [categories, setCategories] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    regularPrice: "",
+    profitMargin: "",
+    CategoryIds: [],
+  });
+  const [images, setImages] = React.useState([]);
+  const maxNumber = 69;
+  const onChange = (imageList, addUpdateIndex) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
+  const handleSelectChange = (selected) => {
+    setSelectedOptions(selected);
+
+    const CategoryIds = selected.map((opt) => ({
+      categoryId: Number(opt.value),
+    }));
+
+    setFormData((prev) => ({
+      ...prev,
+      CategoryIds: CategoryIds,
+    }));
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const CampaignPost = async (e) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    e.preventDefault();
+    const formDataToSend = new FormData();
+
+    // ✅ Basic fields
+    formDataToSend.append("Name", formData.name || "");
+    formDataToSend.append("Description", formData.description || "");
+    formDataToSend.append("RegularPrice", formData.regularPrice || "");
+    formDataToSend.append("ProfitMargin", formData.profitMargin || "");
+
+    // ✅ File array (UploadImages)
+    images.forEach((img) => {
+      if (img.file) {
+        formDataToSend.append("UploadImages", img.file);
+      }
+    });
+    try {
+      const response = await createProduct(formDataToSend, token);
+      if (response.success) {
+        toast.success(response.message, {
+          position: "top-right",
+          autoClose: 3000, // closes after 3 sec
+        });
+      } else {
+        toast.error("Something went wrong!");
+      }
+      console.log("Product BIlal", response);
+    } catch (error) {
+      console.error("Error saving campaign:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const token = localStorage.getItem("token"); // direct localStorage se
+      if (!token) return;
+      try {
+        const res = await getAllCategory(token);
+
+        console.log("Category Data", res);
+        // map API data to react-select format
+        const formatted = res.data.map((p) => ({
+          value: p.id,
+          label: p.name,
+        }));
+        setCategories(formatted);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchCategory();
+  }, [token]);
+
   return (
     <>
       <AdminHeader />
@@ -36,7 +133,7 @@ const AddProduct = ({ token }) => {
                 </div>
                 <div className="card card-Vertical card-default campaign-form card-md mb-4">
                   <div className="card-header">
-                    <h5>Group Information</h5>
+                    <h5>Add New Product</h5>
                   </div>
                   <div className="card-body p-5">
                     <div className="Vertical-form">
@@ -46,12 +143,14 @@ const AddProduct = ({ token }) => {
                             htmlFor="formGroupExampleInput"
                             className="color-dark fs-14 fw-500 align-center"
                           >
-                            Group Name*
+                            Title*
                           </label>
                           <input
                             type="text"
                             className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                            name="Name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
                             placeholder="Group Title here"
                           />
                         </div>
@@ -60,16 +159,56 @@ const AddProduct = ({ token }) => {
                             htmlFor="exampleFormControlTextarea1"
                             className="il-gray fs-14 fw-500 align-center"
                           >
-                            Group Description *
+                            Product Description *
                           </label>
                           <textarea
                             className="form-control"
                             placeholder="About Group "
                             rows={5}
-                            name="Description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
                           />
                         </div>
-                        {/* <div className="form-group form-element-textarea mb-20">
+                        <div className="row">
+                          <div className="col-lg-6 col-sm-12">
+                            <div className="form-group">
+                              <label
+                                htmlFor="formGroupExampleInput"
+                                className="color-dark fs-14 fw-500 align-center"
+                              >
+                                Regular Price $
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                name="regularPrice"
+                                value={formData.regularPrice}
+                                onChange={handleChange}
+                                placeholder="Type Price"
+                              />
+                            </div>
+                          </div>
+                          <div className="col-lg-6 col-sm-12">
+                            <div className="form-group">
+                              <label
+                                htmlFor="formGroupExampleInput"
+                                className="color-dark fs-14 fw-500 align-center"
+                              >
+                                Profit Margin $
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                name="profitMargin"
+                                value={formData.profitMargin}
+                                onChange={handleChange}
+                                placeholder="Type Price"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="form-group form-element-textarea mb-20">
                           <label
                             htmlFor="exampleFormControlTextarea1"
                             className="il-gray fs-14 fw-500 align-center"
@@ -184,28 +323,32 @@ const AddProduct = ({ token }) => {
                               </>
                             )}
                           </ImageUploading>
-                        </div> */}
+                        </div>
                         <div className="form-group">
                           <label className="color-dark fs-14 fw-500 align-center">
-                            Select Products to Fundraising with
+                            Select Categories
                           </label>
-                          <Select isMulti className="mb-3" />
+                          <Select
+                            isMulti
+                            options={categories}
+                            value={selectedOptions}
+                            onChange={handleSelectChange}
+                            className="mb-3"
+                          />
 
-                          <p>Selected: </p>
+                          <p>
+                            Selected:{" "}
+                            {selectedOptions.map((opt) => opt.label).join(", ")}
+                          </p>
                         </div>
 
                         <div className="layout-button mt-5 text-end">
                           <button
-                            type="button"
-                            className="btn secondry-btn btn-default btn-squared border-normal bg-normal px-20 me-3"
-                          >
-                            Save Draft
-                          </button>
-                          <button
+                            onClick={CampaignPost}
                             type="button"
                             className="btn primary-btn btn-default btn-squared px-30"
                           >
-                            Send for Approval
+                            Upload Product
                           </button>
                         </div>
                       </form>

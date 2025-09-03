@@ -2,34 +2,179 @@ import AdminHeader from "../../layout/AdminHeader";
 import { Link } from "react-router-dom";
 import React from "react";
 import ImageUploading from "react-images-uploading";
-// import { AddCompaignPost } from "../../../../api/Campaign/Campaign";
+import { createCampaign } from "../../../../api/Campaign/Campaign";
+import { getOrganizers } from "../../../../api/Auth/Auth";
+import { getAllGroups } from "../../../../api/Group/Group";
+import { getAllProducts } from "../../../../api/Product/Porduct";
+import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
+
 import { useState, useEffect } from "react";
-const AddCompaign = () => {
+const AddCompaign = ({ token }) => {
+  const [organizer, setOrganizer] = useState([]);
+  const [organizerOptions, setorganizerOptions] = useState([]);
+  const [group, setGroup] = useState([]);
+  const [groupOptions, setgroupOptions] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const showErrorsInToast = (errors) => {
+    if (Array.isArray(errors)) {
+      // Case: password policy (array of objects with description)
+      errors.forEach((err) => {
+        toast.error(err.description || err.message || JSON.stringify(err));
+      });
+    } else if (typeof errors === "object" && errors !== null) {
+      // Case: validation errors object
+      Object.values(errors).forEach((errorArray) => {
+        if (Array.isArray(errorArray)) {
+          errorArray.forEach((msg) => toast.error(msg));
+        }
+      });
+    } else {
+      // Fallback (string or unexpected)
+      toast.error(errors?.toString() || "Something went wrong!");
+    }
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     requiredAmount: "",
     raisedAmount: "",
     assignedToId: null,
-    assignedToName: null,
+    assignedToName: "",
+    CreatedByName: "",
     startDate: "",
     endDate: "",
+    UploadImages: [],
+    OrganizerIds: [],
+    GroupIds: [],
+    ProductIds: [],
   });
   const [images, setImages] = React.useState([]);
   const maxNumber = 69;
 
-  // Load organizer data from localStorage on component mount
+  // Get Organizer ID in DropDOwn
+
+  const handleorganizerChange = (selected) => {
+    setorganizerOptions(selected);
+
+    const OrganizerIds = selected.map((opt) => opt.value); // ✅ keep GUID as string
+
+    setFormData((prev) => ({
+      ...prev,
+      OrganizerIds,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchOrganizer = async () => {
+      const token = localStorage.getItem("token"); // direct localStorage se
+      if (!token) return;
+      try {
+        const res = await getOrganizers(token);
+        // map API data to react-select format
+        const formatted = res.data.map((p) => ({
+          value: p.id,
+          label: p.name,
+        }));
+        setOrganizer(formatted);
+        console.log("sca", formatted);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchOrganizer();
+  }, [token]);
+
+  // Get Organizer ID in DropDOwn Complete
+
+  // Get Group ID in DropDOwn
+
+  const handlegroupChange = (selected) => {
+    setgroupOptions(selected);
+
+    const GroupIds = selected.map((opt) => Number(opt.value));
+
+    setFormData((prev) => ({
+      ...prev,
+      GroupIds,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchGroup = async () => {
+      const token = localStorage.getItem("token"); // direct localStorage se
+      if (!token) return;
+      try {
+        const res = await getAllGroups(token);
+        // map API data to react-select format
+        const formatted = res.data.map((p) => ({
+          value: p.id,
+          label: p.name,
+        }));
+        setGroup(formatted);
+        console.log("sca", formatted);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchGroup();
+  }, [token]);
+
+  // Get Group ID in DropDOwn Complete
+
+  // Get Product ID in DropDOwn
+
+  const handleSelectChange = (selected) => {
+    setSelectedOptions(selected);
+
+    const ProductIds = selected.map((opt) => Number(opt.value));
+
+    setFormData((prev) => ({
+      ...prev,
+      ProductIds,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const token = localStorage.getItem("token"); // direct localStorage se
+      if (!token) return;
+      try {
+        const res = await getAllProducts(token);
+        // map API data to react-select format
+        const formatted = res.data.map((p) => ({
+          value: p.id,
+          label: p.name,
+        }));
+        setProducts(formatted);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, [token]);
+
+  // Get Product ID in DropDOwn Complete
+
+  // Load organizer data from localStorage on component mount Need to Delete
   useEffect(() => {
     const organizerId = localStorage.getItem("organizerId");
     const organizerName = localStorage.getItem("organizerName");
-    
+
     if (organizerId && organizerName) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         assignedToId: organizerId,
-        assignedToName: organizerName
+        assignedToName: organizerName,
       }));
-      console.log("Organizer loaded from localStorage:", { organizerId, organizerName });
+      console.log("Organizer loaded from localStorage:", {
+        organizerId,
+        organizerName,
+      });
     }
   }, []);
 
@@ -47,94 +192,110 @@ const AddCompaign = () => {
     setImages(imageList);
   };
 
-  // const CampaignPost = async (e) => {
-  //   e.preventDefault();
-  //   const formDataToSend = new FormData();
+  const CampaignPost = async (e) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    e.preventDefault();
+    setIsLoading(true);
+    const formDataToSend = new FormData();
 
-  //   // ✅ Basic fields
-  //   formDataToSend.append("Id", 0);
-  //   formDataToSend.append("Name", formData.name || "");
-  //   formDataToSend.append("Description", formData.description || "");
-  //   formDataToSend.append(
-  //     "RequiredAmount",
-  //     parseFloat(formData.requiredAmount) || 0
-  //   );
-  //   formDataToSend.append(
-  //     "RaisedAmount",
-  //     parseFloat(formData.raisedAmount) || 0
-  //   );
-  //   formDataToSend.append(
-  //     "StartDate",
-  //     formData.startDate || new Date().toISOString()
-  //   );
-  //   formDataToSend.append(
-  //     "EndDate",
-  //     formData.endDate || new Date().toISOString()
-  //   );
+    // ✅ Basic fields
+    formDataToSend.append("Id", 0);
+    formDataToSend.append("Name", formData.name || "");
+    formDataToSend.append("Description", formData.description || "");
+    formDataToSend.append(
+      "RequiredAmount",
+      parseFloat(formData.requiredAmount) || 0
+    );
+    formDataToSend.append(
+      "RaisedAmount",
+      parseFloat(formData.raisedAmount) || 0
+    );
+    formDataToSend.append(
+      "StartDate",
+      formData.startDate || new Date().toISOString()
+    );
+    formDataToSend.append(
+      "EndDate",
+      formData.endDate || new Date().toISOString()
+    );
 
-  //   formDataToSend.append("Status", true);
-  //   formDataToSend.append("IsCompaignDeleted", false);
-  //   formDataToSend.append("IsCompaignLaunch", true);
-  //   formDataToSend.append("IsApproved", false);
+    formDataToSend.append("Status", true);
+    formDataToSend.append("IsCompaignDeleted", false);
+    formDataToSend.append("IsCompaignLaunch", true);
+    formDataToSend.append("IsApproved", false);
 
-  //   formDataToSend.append("AssignedToId", formData.assignedToId || "");
-  //   formDataToSend.append("AssignedToName", formData.assignedToName || "Admin");
-  //   formDataToSend.append("CreatedDate", new Date().toISOString());
-  //   formDataToSend.append("CreatedByName", "Admin");
-  //   formDataToSend.append("UpdatedDate", new Date().toISOString());
-  //   formDataToSend.append("UpdatedByName", "Admin");
+    formDataToSend.append("AssignedToId", formData.assignedToId || "");
+    formDataToSend.append("AssignedToName", formData.assignedToName || "Admin");
+    formDataToSend.append("CreatedByName", formData.assignedToName || "Admin");
 
-  //   // ✅ File array (UploadImages)
-  //   images.forEach((img) => {
-  //     if (img.file) {
-  //       formDataToSend.append("UploadImages", img.file);
-  //     }
-  //   });
+    // ✅ File array (UploadImages)
+    images.forEach((img) => {
+      if (img.file) {
+        formDataToSend.append("UploadImages", img.file);
+      }
+    });
 
-  //   // ✅ ImagePaths (if you allow pre-existing images)
-  //   // Example: formDataToSend.append("ImagePaths", "/Images/old.png");
+    // ✅ Append ProductIds
+    if (formData.ProductIds && formData.ProductIds.length > 0) {
+      formData.ProductIds.forEach((id) => {
+        formDataToSend.append("ProductIds", id);
+      });
+    }
 
-  //   // ✅ Arrays (append multiple values if selected)
-  //   formData.selectedProducts?.forEach((id) => {
-  //     formDataToSend.append("ProductIds", id);
-  //   });
+    // ✅ Append GroupIds
+    if (formData.GroupIds && formData.GroupIds.length > 0) {
+      formData.GroupIds.forEach((id) => {
+        formDataToSend.append("GroupIds", id);
+      });
+    }
 
-  //   formData.selectedGroups?.forEach((id) => {
-  //     formDataToSend.append("GroupIds", id);
-  //   });
+    // ✅ Append OrganizerIds
+    if (formData.OrganizerIds && formData.OrganizerIds.length > 0) {
+      formData.OrganizerIds.forEach((id) => {
+        formDataToSend.append("OrganizerIds", id);
+      });
+    }
 
-  //   formData.selectedOrganizers?.forEach((id) => {
-  //     formDataToSend.append("OrganizerIds", id);
-  //   });
+    // ✅ Complex objects (must be appended as stringified JSON, one per array element)
+    // formDataToSend.append(
+    //   "CompaignProducts",
+    //   JSON.stringify({ id: 0, name: "string" })
+    // );
+    // formDataToSend.append(
+    //   "CompaignGroups",
+    //   JSON.stringify({ id: 0, name: "string" })
+    // );
+    // formDataToSend.append(
+    //   "CompaignOrganizers",
+    //   JSON.stringify({ id: "string", name: "string" })
+    // );
 
-  //   // ✅ Complex objects (must be appended as stringified JSON, one per array element)
-  //   // formDataToSend.append(
-  //   //   "CompaignProducts",
-  //   //   JSON.stringify({ id: 0, name: "string" })
-  //   // );
-  //   // formDataToSend.append(
-  //   //   "CompaignGroups",
-  //   //   JSON.stringify({ id: 0, name: "string" })
-  //   // );
-  //   // formDataToSend.append(
-  //   //   "CompaignOrganizers",
-  //   //   JSON.stringify({ id: "string", name: "string" })
-  //   // );
+    // formDataToSend.append("ProductIds", []);
+    // formDataToSend.append("GroupIds", []);
+    // formDataToSend.append("OrganizerIds", []);
 
-  //   formDataToSend.append("ProductIds", []);
-  //   formDataToSend.append("GroupIds", []);
-  //   formDataToSend.append("OrganizerIds", []);
-
-  //   try {
-  //     const response = await AddCompaignPost(formDataToSend);
-  //     console.log("Campaign BIlal", response);
-  //   } catch (error) {
-  //     console.error("Error saving campaign:", error);
-  //   }
-  // };
+    try {
+      const response = await createCampaign(formDataToSend, token);
+      console.log("Campaign BIlal", response);
+    } catch (error) {
+      console.error("Error saving campaign:", error);
+      const backendErrors = error.response?.data;
+      if (backendErrors?.errors) {
+        showErrorsInToast(backendErrors.errors);
+      } else {
+        showErrorsInToast(backendErrors);
+      }
+    } finally {
+      setIsLoading(false);
+      // Stop loading in all cases
+    }
+  };
 
   return (
     <>
+      <ToastContainer />
+
       <AdminHeader />
       <main className="main-content">
         <div className="contents p-5">
@@ -354,16 +515,13 @@ const AddCompaign = () => {
                               <label className="color-dark fs-14 fw-500 align-center">
                                 Assigned Organizer
                               </label>
-                              <input
-                                type="text"
-                                className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                value={formData.assignedToName || "No organizer assigned"}
-                                readOnly
-                                disabled
+                              <Select
+                                isMulti
+                                options={organizer}
+                                value={organizerOptions}
+                                onChange={handleorganizerChange}
+                                className="mb-3"
                               />
-                              <small className="text-muted">
-                                Automatically assigned from your login session
-                              </small>
                             </div>
                           </div>
                           <div className="col-lg-6 col-sm-12">
@@ -371,11 +529,13 @@ const AddCompaign = () => {
                               <label className="color-dark fs-14 fw-500 align-center">
                                 Select Group
                               </label>
-                              <select className="form-control ih-medium ip-gray radius-xs b-light px-15">
-                                <option>Select Group</option>
-                                <option>ABC Group</option>
-                                <option>XYZ Group</option>
-                              </select>
+                              <Select
+                                isMulti
+                                options={group}
+                                value={groupOptions}
+                                onChange={handlegroupChange}
+                                className="mb-3"
+                              />
                             </div>
                           </div>
                         </div>
@@ -388,59 +548,47 @@ const AddCompaign = () => {
                               <label className="color-dark fs-14 fw-500 align-center">
                                 Select Products to Fundraising with
                               </label>
-                              <select className="form-control ih-medium ip-gray radius-xs b-light px-15">
-                                <option>Select Products</option>
-                                <option>ABC Product</option>
-                                <option>XYZ Product</option>
-                              </select>
+                              <Select
+                                isMulti
+                                options={products}
+                                value={selectedOptions}
+                                onChange={handleSelectChange}
+                                className="mb-3"
+                              />
                             </div>
                           </div>
                           <div className="col-lg-6 col-sm-12">
                             <div className="row">
-                                                                <div className="col-lg-6 col-sm-12">
-                                    <div className="form-group">
-                                      <label className="color-dark fs-14 fw-500 align-center">
-                                        Start Date
-                                      </label>
-                                      <input
-                                        id="startDate"
-                                        type="date"
-                                        className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                        name="startDate"
-                                        value={formData.startDate}
-                                        onChange={handleChange}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="col-lg-6 col-sm-12">
-                                    <div className="form-group">
-                                      <label className="color-dark fs-14 fw-500 align-center">
-                                        End Date
-                                      </label>
-                                      <input
-                                        id="endDate"
-                                        type="date"
-                                        className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                        name="endDate"
-                                        value={formData.endDate}
-                                        onChange={handleChange}
-                                      />
-                                    </div>
-                                  </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Debug Information */}
-                        <div className="mt-4 p-3 bg-light rounded">
-                          <h6 className="text-muted">Debug Information:</h6>
-                          <div className="row">
-                            <div className="col-md-6">
-                              <small><strong>Assigned To ID:</strong> {formData.assignedToId || "Not set"}</small><br/>
-                              <small><strong>Assigned To Name:</strong> {formData.assignedToName || "Not set"}</small>
-                            </div>
-                            <div className="col-md-6">
-                              <small><strong>Start Date:</strong> {formData.startDate || "Not set"}</small><br/>
-                              <small><strong>End Date:</strong> {formData.endDate || "Not set"}</small>
+                              <div className="col-lg-6 col-sm-12">
+                                <div className="form-group">
+                                  <label className="color-dark fs-14 fw-500 align-center">
+                                    Start Date
+                                  </label>
+                                  <input
+                                    id="startDate"
+                                    type="date"
+                                    className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                    name="startDate"
+                                    value={formData.startDate}
+                                    onChange={handleChange}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-lg-6 col-sm-12">
+                                <div className="form-group">
+                                  <label className="color-dark fs-14 fw-500 align-center">
+                                    End Date
+                                  </label>
+                                  <input
+                                    id="endDate"
+                                    type="date"
+                                    className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                    name="endDate"
+                                    value={formData.endDate}
+                                    onChange={handleChange}
+                                  />
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -453,11 +601,19 @@ const AddCompaign = () => {
                             Save Draft
                           </button>
                           <button
-                            // onClick={CampaignPost}
+                            onClick={CampaignPost}
                             type="button"
                             className="btn primary-btn btn-default btn-squared px-30"
+                            disabled={isLoading}
                           >
-                            Launch Campaign
+                            {isLoading ? (
+                              <span>
+                                <span className="spinner"></span> Saving
+                                Campaign ....
+                              </span>
+                            ) : (
+                              " Launch Campaign"
+                            )}
                           </button>
                         </div>
                       </form>
