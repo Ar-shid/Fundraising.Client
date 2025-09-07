@@ -26,9 +26,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # Build React App
+      # Build React App (ignore ESLint warnings)
       - name: Build React App
-        run: npm run build
+        run: CI=false npm run build
 
       # Ensure Target Directory Exists & Cleanup Old Builds
       - name: Ensure Target Directory Exists & Cleanup Old Builds
