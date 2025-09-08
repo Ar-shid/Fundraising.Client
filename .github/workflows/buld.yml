@@ -1,0 +1,61 @@
+name: "Build"
+run-name: "[Fundrasing] React Build by ${{ github.actor }}"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build React Application
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Set Build Timestamp
+      - name: Set Build Timestamp
+        run: echo "BUILD_TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      # 3️⃣ Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 4️⃣ Install Dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # 5️⃣ Build React App (ignore ESLint warnings)
+      - name: Build React App
+        run: CI=false npm run build
+
+      # 6️⃣ Ensure target directory exists & cleanup old builds
+      - name: Ensure Target Directory Exists & Cleanup Old Builds
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          script: |
+            powershell -Command "
+            # Create timestamped folder if not exists
+            if (!(Test-Path 'C:\Builds\Build-${{ env.BUILD_TIMESTAMP }}')) { New-Item -ItemType Directory -Path 'C:\Builds\Build-${{ env.BUILD_TIMESTAMP }}' -Force }
+            # Keep only last 5 builds
+            Get-ChildItem -Path 'C:\Builds' -Directory | Sort-Object CreationTime -Descending | Select-Object -Skip 5 | Remove-Item -Recurse -Force
+            "
+
+      # 7️⃣ Upload build artifacts via SCP
+      - name: Upload React Build to Windows Server via SCP
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          source: "build/*"
+          target: "C:\\Builds\\Build-${{ env.BUILD_TIMESTAMP }}\\Fundrasing"
+
