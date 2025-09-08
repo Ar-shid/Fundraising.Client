@@ -7,7 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import React from "react";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const GroupCard = () => {
+const OGroupCard = () => {
   const [group, setGroups] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -139,7 +139,7 @@ const GroupCard = () => {
     </>
   );
 };
-export default GroupCard;
+export default OGroupCard;
 function MyVerticallyCenteredModal({ group, ...props }) {
   return (
     <Modal

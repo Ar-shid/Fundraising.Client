@@ -1,8 +1,9 @@
-import AdminHeader from "../layout/AdminHeader";
-import Sidebar from "../layout/Sidebar";
-import ScoreCard from "./section/ScoreCard";
-import CampaignCard from "../campaign/section/CampaignCard";
-const AdminHome = () => {
+import AdminHeader from "../../admin/layout/AdminHeader";
+import Sidebar from "../../admin/layout/Sidebar";
+import SalesScoreCard from "./section/SalesScoreCard";
+import SCampaignCard from "../campaign/section/SCampaignCard";
+import BarChart from "../../admin/finance/section/BarChart";
+const SalesHome = () => {
   return (
     <>
       <AdminHeader />
@@ -18,16 +19,18 @@ const AdminHome = () => {
                   </h4>
                 </div>
               </div>
-              <ScoreCard />
+              <SalesScoreCard />
               <div className="col-lg-12">
                 <div className="breadcrumb-main">
                   <h4 className="text-capitalize breadcrumb-title">
-                    Your Campaigns
+                    Active Campaigns
                   </h4>
                 </div>
               </div>
-              <CampaignCard limit={3} />
-              <div className="col-lg-3">Bilal</div>
+              <SCampaignCard limit={3} />
+              <div className="col-lg-9">
+                <BarChart />
+              </div>
             </div>
           </div>
         </div>
@@ -35,4 +38,4 @@ const AdminHome = () => {
     </>
   );
 };
-export default AdminHome;
+export default SalesHome;

@@ -1,8 +1,8 @@
-import AdminHeader from "../layout/AdminHeader";
-import Sidebar from "../layout/Sidebar";
-import ScoreCard from "./section/ScoreCard";
-import CampaignCard from "../campaign/section/CampaignCard";
-const AdminHome = () => {
+import AdminHeader from "../../admin/layout/AdminHeader";
+import Sidebar from "../../admin/layout/Sidebar";
+import OrganizerHomeScoreCard from "./section/OrganizerHomeScoreCard";
+import OGroupTable from "./section/OGroupTable";
+const OrganizerHome = () => {
   return (
     <>
       <AdminHeader />
@@ -18,16 +18,15 @@ const AdminHome = () => {
                   </h4>
                 </div>
               </div>
-              <ScoreCard />
-              <div className="col-lg-12">
+              <OrganizerHomeScoreCard />
+              <div className="col-lg-9">
                 <div className="breadcrumb-main">
                   <h4 className="text-capitalize breadcrumb-title">
-                    Your Campaigns
+                    Your Groups
                   </h4>
                 </div>
               </div>
-              <CampaignCard limit={3} />
-              <div className="col-lg-3">Bilal</div>
+              <OGroupTable />
             </div>
           </div>
         </div>
@@ -35,4 +34,4 @@ const AdminHome = () => {
     </>
   );
 };
-export default AdminHome;
+export default OrganizerHome;

@@ -2,8 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { login, getOrganizers } from "../../../api/Auth/Auth";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { runAllTests } from "../../../api/test-apis";
 import "react-toastify/dist/ReactToastify.css";
+import { jwtDecode } from "jwt-decode";
+
 const showErrorsInToast = (errors) => {
   if (Array.isArray(errors)) {
     // Case: password policy (array of objects with description)
@@ -27,15 +28,20 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
   const navigate = useNavigate();
 
-  const runTests = async () => {
-    const result = await runAllTests();
-    console.log("Tests result:", result);
-  };
-
   useEffect(() => {
-    runTests();
+    // Load saved credentials if available
+    const savedEmail = localStorage.getItem("rememberEmail");
+    const savedPassword = localStorage.getItem("rememberPassword");
+
+    if (savedEmail && savedPassword) {
+      setEmail(savedEmail);
+      setPassword(savedPassword);
+      setRememberMe(true);
+    }
   }, []);
 
   const loginUser = async (e) => {
@@ -50,8 +56,25 @@ const Login = () => {
       const response = await login(data);
       // const { token } = response;
       const token = response?.data?.token; // if you're using axios
-
       localStorage.setItem("token", token);
+
+      let given_name = "";
+
+      if (token) {
+        const decoded = jwtDecode(token);
+        if (decoded.given_name) {
+          given_name = decoded.given_name;
+          localStorage.setItem("given_name", given_name);
+        }
+      }
+
+      if (rememberMe) {
+        localStorage.setItem("rememberEmail", email);
+        localStorage.setItem("rememberPassword", password);
+      } else {
+        localStorage.removeItem("rememberEmail");
+        localStorage.removeItem("rememberPassword");
+      }
 
       // Fetch organizers after successful login
       try {
@@ -160,9 +183,11 @@ const Login = () => {
                         <input
                           type="checkbox"
                           class="form-check-input"
-                          id="exampleCheck1"
+                          id="rememberMe"
+                          checked={rememberMe}
+                          onChange={() => setRememberMe(!rememberMe)}
                         />
-                        <label class="form-check-label m-0" for="exampleCheck1">
+                        <label class="form-check-label m-0" for="rememberMe">
                           <span class="custom-box"></span>
                           <span style={{ marginTop: "2px" }}>Remember me</span>
                         </label>

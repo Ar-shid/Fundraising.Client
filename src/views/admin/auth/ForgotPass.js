@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { forgot } from "../../../api/Auth/Auth";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { runAllTests } from "../../../api/test-apis";
 import "react-toastify/dist/ReactToastify.css";
 const showErrorsInToast = (errors) => {
   if (Array.isArray(errors)) {

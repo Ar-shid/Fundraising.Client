@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { getAllProducts } from "../../../../api/Product/Porduct";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const ProductCard = () => {
   const [product, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +67,7 @@ const ProductCard = () => {
                           className="card-img-top img-fluid"
                           src={
                             product.imagePaths
-                              ? `http://192.169.177.4${product.imagePaths}` // ✅ base URL + relative path
+                              ? `${BASE_URL}${product.imagePaths}` // ✅ base URL + relative path
                               : "./img/group.png"
                           }
                         />

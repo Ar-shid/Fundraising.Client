@@ -8,7 +8,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const CampaignCard = ({ limit }) => {
+const SCampaignCard = ({ limit }) => {
   const [campaign, setCampaign] = useState([]);
   const [loading, setLoading] = useState(true);
   const getDaysLeft = (endDate) => {
@@ -151,4 +151,4 @@ const CampaignCard = ({ limit }) => {
     </>
   );
 };
-export default CampaignCard;
+export default SCampaignCard;

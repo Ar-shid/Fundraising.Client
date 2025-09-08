@@ -22,6 +22,14 @@ import AdminFinance from "./views/admin/finance";
 import AdminSetting from "./views/admin/setting";
 import Profile from "./views/admin/setting/pages/Profile";
 import AdminOrder from "./views/admin/order";
+// Organizer Links STart
+import OrganizerHome from "./views/organizer/home";
+import OrganizerCampaign from "./views/organizer/campaign";
+import OrganizerGroup from "./views/organizer/group";
+import OrganizerParticipant from "./views/organizer/participant";
+// Sale Links Start
+import SalesHome from "./views/sales/home";
+import SalesCampaign from "./views/sales/campaign";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/scss/style.css";
 import "./assets/scss/test.css";
@@ -129,6 +137,55 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminOrder />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/organizer-home"
+            element={
+              <ProtectedRoute>
+                <OrganizerHome />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/organizer-campaign"
+            element={
+              <ProtectedRoute>
+                <OrganizerCampaign />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/organizer-group"
+            element={
+              <ProtectedRoute>
+                <OrganizerGroup />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/organizer-participant"
+            element={
+              <ProtectedRoute>
+                <OrganizerParticipant />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller-home"
+            element={
+              <ProtectedRoute>
+                <SalesHome />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller-campaign"
+            element={
+              <ProtectedRoute>
+                <SalesCampaign />
               </ProtectedRoute>
             }
           />
