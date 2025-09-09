@@ -10,6 +10,7 @@ const Profile = () => {
 
   if (token) {
     const decoded = jwtDecode(token);
+    console.log(decoded);
     if (decoded.name) {
       email = decoded.email;
       name = decoded.name;

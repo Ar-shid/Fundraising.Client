@@ -10,6 +10,17 @@ export const getAllCampaigns = async (token) => {
   return data;
 };
 
+// GET /api/Compaign - Get campaigns Approval
+
+export const getCampaignApproval = async (token) => {
+  const { data } = await invoke({
+    url: `/api/Compaign/CompaignApprovals`,
+    method: "GET",
+    token,
+  });
+  return data;
+};
+
 // POST /api/Compaign - Create new campaign (Form data)
 
 export const createCampaign = async (campaignData, token) => {
@@ -28,7 +39,7 @@ export const createCampaign = async (campaignData, token) => {
 // GET /api/Compaig/{id} - Get campaign by ID
 export const getCampaignById = async (id, token) => {
   const { data } = await invoke({
-    url: `/api/Compaig/${id}`,
+    url: `/api/Compaign/${id}`,
     method: "GET",
     token,
   });
@@ -38,12 +49,23 @@ export const getCampaignById = async (id, token) => {
 // PUT /api/Compaig/{id} - Update campaign by ID (Form data)
 export const updateCampaign = async (id, campaignData, token) => {
   const { data } = await invoke({
-    url: `/api/Compaig/${id}`,
+    url: `/api/Compaign/${id}`,
     method: "PUT",
     data: campaignData,
     token,
     // Note: Don't set Content-Type for FormData, let the browser set it automatically
     // with the correct boundary
+  });
+  return data;
+};
+
+// POST /api/Compaig/{id} - Update campaign Approval
+export const updateCampaignApproval = async (id, status, token) => {
+  const { data } = await invoke({
+    url: `/api/Compaign/UpdateCompaignApprovalAsync/${id}?status=${status}`,
+    method: "POST",
+    data: status,
+    token,
   });
   return data;
 };

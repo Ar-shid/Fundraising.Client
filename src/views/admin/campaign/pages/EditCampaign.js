@@ -1,22 +1,229 @@
 import AdminHeader from "../../layout/AdminHeader";
-import { Link } from "react-router-dom";
-import React from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import ImageUploading from "react-images-uploading";
-import { AddCompaignPost } from "../../../../api/Campaign/Campaign";
-import { useState } from "react";
-const AddCompaign = () => {
+import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  getCampaignById,
+  updateCampaign,
+} from "../../../../api/Campaign/Campaign";
+import { getOrganizers } from "../../../../api/Auth/Auth";
+import { getAllGroups } from "../../../../api/Group/Group";
+import { getAllProducts } from "../../../../api/Product/Porduct";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL || "";
+
+const EditCompaign = ({ token }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [organizer, setOrganizer] = useState([]);
+  const [organizerOptions, setorganizerOptions] = useState([]);
+  const [group, setGroup] = useState([]);
+  const [groupOptions, setgroupOptions] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  const [images, setImages] = React.useState([]);
+  const maxNumber = 69;
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     requiredAmount: "",
     raisedAmount: "",
-    assignedToId: "",
+    assignedToId: null,
     assignedToName: "",
+    CreatedByName: "",
     startDate: "",
     endDate: "",
+    UploadImages: [],
+    OrganizerIds: [],
+    GroupIds: [],
+    ProductIds: [],
   });
-  const [images, setImages] = React.useState([]);
-  const maxNumber = 69;
+
+  const showErrorsInToast = (errors) => {
+    if (Array.isArray(errors)) {
+      errors.forEach((err) => {
+        toast.error(err.description || err.message || JSON.stringify(err));
+      });
+    } else if (typeof errors === "object" && errors !== null) {
+      Object.values(errors).forEach((errorArray) => {
+        if (Array.isArray(errorArray)) {
+          errorArray.forEach((msg) => toast.error(msg));
+        }
+      });
+    } else {
+      toast.error(errors?.toString() || "Something went wrong!");
+    }
+  };
+
+  // Fetch dropdown data (Organizers, Groups, Products)
+  useEffect(() => {
+    const fetchDropdowns = async () => {
+      const tokenLs = localStorage.getItem("token");
+      if (!tokenLs) return;
+
+      try {
+        const [orgRes, grpRes, prodRes] = await Promise.all([
+          getOrganizers(tokenLs),
+          getAllGroups(tokenLs),
+          getAllProducts(tokenLs),
+        ]);
+
+        const organizerFormatted = orgRes.data.map((p) => ({
+          value: p.id, // GUID likely as string
+          label: p.name,
+        }));
+        setOrganizer(organizerFormatted);
+
+        const groupFormatted = grpRes.data.map((p) => ({
+          value: p.id, // number
+          label: p.name,
+        }));
+        setGroup(groupFormatted);
+
+        const productsFormatted = prodRes.data.map((p) => ({
+          value: p.id, // number
+          label: p.name,
+        }));
+        setProducts(productsFormatted);
+      } catch (err) {
+        console.error("Error fetching dropdown lists:", err);
+      }
+    };
+    fetchDropdowns();
+  }, [token]);
+
+  // Fetch Campaign by ID and prefill
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      const tokenLs = localStorage.getItem("token");
+      if (!tokenLs) return;
+      try {
+        const res = await getCampaignById(id, tokenLs);
+        const campaign = res.data;
+
+        // Prefill basic fields
+        setFormData((prev) => ({
+          ...prev,
+          name: campaign.name || "",
+          description: campaign.description || "",
+          requiredAmount: campaign.requiredAmount ?? "",
+          raisedAmount: campaign.raisedAmount ?? "",
+          assignedToId: campaign.assignedToId || null,
+          assignedToName: campaign.assignedToName || "",
+          CreatedByName: campaign.createdByName || "",
+          startDate: campaign.startDate
+            ? String(campaign.startDate).split("T")[0]
+            : "",
+          endDate: campaign.endDate
+            ? String(campaign.endDate).split("T")[0]
+            : "",
+          // API may return either arrays of ids or arrays of objects; support both
+          OrganizerIds:
+            campaign.organizerIds ??
+            (Array.isArray(campaign.organizers)
+              ? campaign.organizers.map((o) => o.id)
+              : []),
+          GroupIds:
+            campaign.groupIds ??
+            (Array.isArray(campaign.groups)
+              ? campaign.groups.map((g) => g.id)
+              : []),
+          ProductIds:
+            campaign.productIds ??
+            (Array.isArray(campaign.products)
+              ? campaign.products.map((p) => p.id)
+              : []),
+        }));
+
+        // Preload images (supports `imagePaths` or `uploadImages` property)
+        const paths =
+          campaign.imagePaths ??
+          campaign.uploadImages ??
+          campaign.uploadImagePaths ??
+          [];
+        if (Array.isArray(paths) && paths.length > 0) {
+          setImages(
+            paths.map((path, index) => ({
+              data_url: path?.startsWith("http") ? path : `${BASE_URL}${path}`,
+              file: null,
+              id: index,
+            }))
+          );
+        } else {
+          setImages([]);
+        }
+      } catch (err) {
+        console.error("Error fetching campaign by id:", err);
+        toast.error("Failed to load campaign");
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    fetchCampaign();
+  }, [id]);
+
+  // Once dropdown options + formData ids are available, fill selected options
+  useEffect(() => {
+    // Organizers (GUIDs as string)
+    if (organizer.length && formData.OrganizerIds?.length) {
+      const selected = organizer.filter((opt) =>
+        formData.OrganizerIds.includes(opt.value)
+      );
+      setorganizerOptions(selected);
+    }
+
+    // Groups (numbers)
+    if (group.length && formData.GroupIds?.length) {
+      const selected = group.filter((opt) =>
+        formData.GroupIds.includes(opt.value)
+      );
+      setgroupOptions(selected);
+    }
+
+    // Products (numbers)
+    if (products.length && formData.ProductIds?.length) {
+      const selected = products.filter((opt) =>
+        formData.ProductIds.includes(opt.value)
+      );
+      setSelectedOptions(selected);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    organizer,
+    group,
+    products,
+    formData.OrganizerIds,
+    formData.GroupIds,
+    formData.ProductIds,
+  ]);
+
+  // Load organizer data from localStorage on component mount (optional—kept to mirror Add page)
+  useEffect(() => {
+    const organizerId = localStorage.getItem("organizerId");
+    const organizerName = localStorage.getItem("organizerName");
+
+    if (organizerId && organizerName) {
+      setFormData((prev) => ({
+        ...prev,
+        assignedToId: organizerId,
+        assignedToName: organizerName,
+      }));
+      console.log("Organizer loaded from localStorage:", {
+        organizerId,
+        organizerName,
+      });
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,59 +234,134 @@ const AddCompaign = () => {
   };
 
   const onChange = (imageList, addUpdateIndex) => {
-    // data for submit
     console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
 
-  const CampaignPost = async (e) => {
+  // Select handlers
+  const handleorganizerChange = (selected) => {
+    setorganizerOptions(selected || []);
+    const OrganizerIds = (selected || []).map((opt) => opt.value); // GUIDs as string
+    setFormData((prev) => ({
+      ...prev,
+      OrganizerIds,
+    }));
+  };
+
+  const handlegroupChange = (selected) => {
+    setgroupOptions(selected || []);
+    const GroupIds = (selected || []).map((opt) => Number(opt.value));
+    setFormData((prev) => ({
+      ...prev,
+      GroupIds,
+    }));
+  };
+
+  const handleSelectChange = (selected) => {
+    setSelectedOptions(selected || []);
+    const ProductIds = (selected || []).map((opt) => Number(opt.value));
+    setFormData((prev) => ({
+      ...prev,
+      ProductIds,
+    }));
+  };
+
+  // Submit Update
+  const CampaignUpdate = async (e) => {
     e.preventDefault();
+    const tokenLs = localStorage.getItem("token");
+    if (!tokenLs) return;
+
+    setIsLoading(true);
+
     const formDataToSend = new FormData();
 
-    formDataToSend.append("id", 0);
-    formDataToSend.append("name", formData.name);
-    formDataToSend.append("description", formData.description);
+    // ✅ Basic fields
+    formDataToSend.append("Id", id);
+    formDataToSend.append("Name", formData.name || "");
+    formDataToSend.append("Description", formData.description || "");
     formDataToSend.append(
-      "requiredAmount",
+      "RequiredAmount",
       parseFloat(formData.requiredAmount) || 0
     );
-    formDataToSend.append("raisedAmount", formData.raisedAmount);
-    formDataToSend.append("startDate", formData.startDate);
-    formDataToSend.append("endDate", formData.endDate);
-    formDataToSend.append("status", true);
-    formDataToSend.append("isCompaignDeleted", false);
-    formDataToSend.append("isCompaignLaunch", true);
-    formDataToSend.append("isApproved", false);
-    formDataToSend.append("assignedToId", formData.assignedToId);
-    formDataToSend.append("assignedToName", formData.assignedToName);
-    formDataToSend.append("createdDate", new Date().toISOString());
-    formDataToSend.append("createdByName", "Admin");
-    formDataToSend.append("updatedDate", new Date().toISOString());
-    formDataToSend.append("updatedByName", "Admin");
+    formDataToSend.append(
+      "RaisedAmount",
+      parseFloat(formData.raisedAmount) || 0
+    );
+    formDataToSend.append("StartDate", formData.startDate || "");
+    formDataToSend.append("EndDate", formData.endDate || "");
 
-    // Append images as files
-    // images.forEach((img, index) => {
-    //   if (img.data_url) {
-    //     formDataToSend.append("uploadImages", img.data_url);
-    //   }
-    // });
+    // Keep these for compatibility with your backend flags
+    formDataToSend.append("Status", true);
+    formDataToSend.append("IsCompaignDeleted", false);
+    formDataToSend.append("IsCompaignLaunch", true);
+    formDataToSend.append("IsApproved", false);
 
+    formDataToSend.append("AssignedToId", formData.assignedToId || "");
+    formDataToSend.append("AssignedToName", formData.assignedToName || "Admin");
+    formDataToSend.append("CreatedByName", formData.assignedToName || "Admin");
+
+    // ✅ Images: append only new/changed files
     images.forEach((img) => {
       if (img.file) {
-        formDataToSend.append("uploadImages", img.file);
+        formDataToSend.append("UploadImages", img.file);
       }
     });
 
+    // ✅ Append Id arrays
+    (formData.ProductIds || []).forEach((pid) =>
+      formDataToSend.append("ProductIds", pid)
+    );
+    (formData.GroupIds || []).forEach((gid) =>
+      formDataToSend.append("GroupIds", gid)
+    );
+    (formData.OrganizerIds || []).forEach((oid) =>
+      formDataToSend.append("OrganizerIds", oid)
+    );
+
     try {
-      const response = await AddCompaignPost(formDataToSend);
-      console.log("Campaign BIlal", response);
+      await updateCampaign(id, formDataToSend, tokenLs);
+      toast.success("Campaign updated successfully!");
+      navigate("/admin-campaign");
     } catch (error) {
-      console.error("Error saving campaign:", error);
+      console.error("Error updating campaign:", error);
+      const backendErrors = error.response?.data;
+      if (backendErrors?.errors) {
+        showErrorsInToast(backendErrors.errors);
+      } else {
+        showErrorsInToast(backendErrors);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  if (pageLoading) {
+    return (
+      <>
+        <AdminHeader />
+        <main className="main-content">
+          <div className="contents p-5">
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-lg-8 offset-lg-2">
+                  <div className="card card-default card-md mb-4">
+                    <div className="card-body">
+                      <p>Loading campaign...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
+      <ToastContainer />
       <AdminHeader />
       <main className="main-content">
         <div className="contents p-5">
@@ -88,7 +370,7 @@ const AddCompaign = () => {
               <div className="col-lg-8 offset-lg-2">
                 <div className="breadcrumb-main">
                   <h1 className="text-capitalize breadcrumb-title">
-                    Add Your Campaign
+                    Edit Campaign
                   </h1>
                 </div>
                 <div className="card card-default card-md mb-4">
@@ -103,19 +385,20 @@ const AddCompaign = () => {
                         <span className="breadcrumb__seperator">/</span>
                       </li>
                       <li className="atbd-breadcrumb__item">
-                        <Link to="">Add Campaign</Link>
+                        <Link to="">Edit Campaign</Link>
                         <span className="breadcrumb__seperator"></span>
                       </li>
                     </ul>
                   </div>
                 </div>
+
                 <div className="card card-Vertical card-default campaign-form card-md mb-4">
                   <div className="card-header">
                     <h5>Campaign Information</h5>
                   </div>
                   <div className="card-body p-5">
                     <div className="Vertical-form">
-                      <form action="#">
+                      <form onSubmit={CampaignUpdate}>
                         <div className="form-group">
                           <label
                             htmlFor="formGroupExampleInput"
@@ -132,6 +415,7 @@ const AddCompaign = () => {
                             placeholder="Campaign Title here"
                           />
                         </div>
+
                         <div className="form-group form-element-textarea mb-20">
                           <label
                             htmlFor="exampleFormControlTextarea1"
@@ -148,6 +432,7 @@ const AddCompaign = () => {
                             onChange={handleChange}
                           />
                         </div>
+
                         <div className="form-group form-element-textarea mb-20">
                           <label
                             htmlFor="exampleFormControlTextarea1"
@@ -171,7 +456,6 @@ const AddCompaign = () => {
                               isDragging,
                               dragProps,
                             }) => (
-                              // write your building UI
                               <>
                                 <div className="upload__image-wrapper">
                                   <h4
@@ -216,10 +500,10 @@ const AddCompaign = () => {
                                             viewBox="0 0 24 24"
                                             fill="none"
                                             stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="feather feather-edit"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="feather feather-edit"
                                           >
                                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -235,10 +519,10 @@ const AddCompaign = () => {
                                             viewBox="0 0 24 24"
                                             fill="none"
                                             stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="feather feather-trash-2"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="feather feather-trash-2"
                                           >
                                             <polyline points="3 6 5 6 21 6"></polyline>
                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -290,51 +574,63 @@ const AddCompaign = () => {
                             <li>Custom</li>
                           </ul>
                         </div>
+
                         <h3 className="my-5" style={{ fontWeight: "bold" }}>
                           Organizer / Group{" "}
                         </h3>
+
                         <div className="row">
                           <div className="col-lg-6 col-sm-12">
                             <div className="form-group">
                               <label className="color-dark fs-14 fw-500 align-center">
-                                Select Organizer
+                                Assigned Organizer
                               </label>
-                              <select className="form-control ih-medium ip-gray radius-xs b-light px-15">
-                                <option>Select Organizer</option>
-                                <option>Punjab Health Foundation</option>
-                                <option>Punjab Education Foundation</option>
-                              </select>
+                              <Select
+                                isMulti
+                                options={organizer}
+                                value={organizerOptions}
+                                onChange={handleorganizerChange}
+                                className="mb-3"
+                              />
                             </div>
                           </div>
+
                           <div className="col-lg-6 col-sm-12">
                             <div className="form-group">
                               <label className="color-dark fs-14 fw-500 align-center">
                                 Select Group
                               </label>
-                              <select className="form-control ih-medium ip-gray radius-xs b-light px-15">
-                                <option>Select Group</option>
-                                <option>ABC Group</option>
-                                <option>XYZ Group</option>
-                              </select>
+                              <Select
+                                isMulti
+                                options={group}
+                                value={groupOptions}
+                                onChange={handlegroupChange}
+                                className="mb-3"
+                              />
                             </div>
                           </div>
                         </div>
+
                         <h3 className="my-3" style={{ fontWeight: "bold" }}>
                           Fundraising Products & Duration
                         </h3>
+
                         <div className="row">
                           <div className="col-lg-6 col-sm-12">
                             <div className="form-group">
                               <label className="color-dark fs-14 fw-500 align-center">
                                 Select Products to Fundraising with
                               </label>
-                              <select className="form-control ih-medium ip-gray radius-xs b-light px-15">
-                                <option>Select Products</option>
-                                <option>ABC Product</option>
-                                <option>XYZ Product</option>
-                              </select>
+                              <Select
+                                isMulti
+                                options={products}
+                                value={selectedOptions}
+                                onChange={handleSelectChange}
+                                className="mb-3"
+                              />
                             </div>
                           </div>
+
                           <div className="col-lg-6 col-sm-12">
                             <div className="row">
                               <div className="col-lg-6 col-sm-12">
@@ -346,9 +642,13 @@ const AddCompaign = () => {
                                     id="startDate"
                                     type="date"
                                     className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                    name="startDate"
+                                    value={formData.startDate}
+                                    onChange={handleChange}
                                   />
                                 </div>
                               </div>
+
                               <div className="col-lg-6 col-sm-12">
                                 <div className="form-group">
                                   <label className="color-dark fs-14 fw-500 align-center">
@@ -358,31 +658,45 @@ const AddCompaign = () => {
                                     id="endDate"
                                     type="date"
                                     className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                    name="endDate"
+                                    value={formData.endDate}
+                                    onChange={handleChange}
                                   />
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
+
                         <div className="layout-button mt-5 text-end">
                           <button
                             type="button"
                             className="btn secondry-btn btn-default btn-squared border-normal bg-normal px-20 me-3"
+                            onClick={() => navigate(-1)}
                           >
-                            Save Draft
+                            Cancel
                           </button>
+
                           <button
-                            onClick={CampaignPost}
-                            type="button"
+                            type="submit"
                             className="btn primary-btn btn-default btn-squared px-30"
+                            disabled={isLoading}
                           >
-                            Launch Campaign
+                            {isLoading ? (
+                              <span>
+                                <span className="spinner"></span> Updating
+                                Campaign ...
+                              </span>
+                            ) : (
+                              "Update Campaign"
+                            )}
                           </button>
                         </div>
                       </form>
                     </div>
                   </div>
                 </div>
+                {/* end card */}
               </div>
             </div>
           </div>
@@ -391,4 +705,5 @@ const AddCompaign = () => {
     </>
   );
 };
-export default AddCompaign;
+
+export default EditCompaign;

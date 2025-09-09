@@ -6,6 +6,8 @@ import { createGroup } from "../../../../api/Group/Group";
 import { getAllProducts } from "../../../../api/Product/Porduct";
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddGroup = ({ token }) => {
   const [products, setProducts] = useState([]);
@@ -107,6 +109,12 @@ const AddGroup = ({ token }) => {
 
       const response = await createGroup(formData, token);
 
+      if (response && response.data) {
+        toast.success("Group created successfully");
+      } else {
+        toast.error("Failed to create group. Please try again.");
+      }
+
       console.log("Group Post Data", response);
 
       // setResponses((prev) => ({
@@ -144,6 +152,7 @@ const AddGroup = ({ token }) => {
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
       <AdminHeader />
       <main className="main-content">
         <div className="contents p-5">
@@ -159,13 +168,13 @@ const AddGroup = ({ token }) => {
                   <div className="card-body">
                     <ul className="atbd-breadcrumb nav">
                       <li className="atbd-breadcrumb__item">
-                        <Link to="/admin-home">Home</Link>
+                        <Link to="/organizer-home">Home</Link>
                         <span className="breadcrumb__seperator">/</span>
                       </li>
-                      <li className="atbd-breadcrumb__item">
+                      {/* <li className="atbd-breadcrumb__item">
                         <Link to="/admin-group">Group List</Link>
                         <span className="breadcrumb__seperator">/</span>
-                      </li>
+                      </li> */}
                       <li className="atbd-breadcrumb__item">
                         <Link to="">Add Group</Link>
                         <span className="breadcrumb__seperator"></span>

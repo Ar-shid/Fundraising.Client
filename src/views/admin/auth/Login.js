@@ -54,17 +54,23 @@ const Login = () => {
 
     try {
       const response = await login(data);
-      // const { token } = response;
+
       const token = response?.data?.token; // if you're using axios
       localStorage.setItem("token", token);
 
       let given_name = "";
+      let sub = "";
+      let unique_name = "";
 
       if (token) {
         const decoded = jwtDecode(token);
         if (decoded.given_name) {
           given_name = decoded.given_name;
+          sub = decoded.sub;
+          unique_name = decoded.unique_name;
           localStorage.setItem("given_name", given_name);
+          localStorage.setItem("sub", sub);
+          localStorage.setItem("unique_name", unique_name);
         }
       }
 
@@ -77,19 +83,17 @@ const Login = () => {
       }
 
       // Fetch organizers after successful login
-      try {
-        const organizersResponse = await getOrganizers(token);
-        if (organizersResponse?.data && organizersResponse.data.length > 0) {
-          // Get the first organizer's ID and save it
-          const firstOrganizer = organizersResponse.data[0];
-          localStorage.setItem("organizerId", firstOrganizer.id);
-          localStorage.setItem("organizerName", firstOrganizer.name);
-          console.log("Organizer saved:", firstOrganizer);
-        }
-      } catch (organizerError) {
-        console.error("Error fetching organizers:", organizerError);
-        // Don't block login if organizers fetch fails
-      }
+      // try {
+      //   const organizersResponse = await getOrganizers(token);
+      //   if (organizersResponse?.data && organizersResponse.data.length > 0) {
+      //     const firstOrganizer = organizersResponse.data[0];
+      //     localStorage.setItem("organizerId", firstOrganizer.id);
+      //     localStorage.setItem("organizerName", firstOrganizer.name);
+      //     console.log("Organizer saved:", firstOrganizer);
+      //   }
+      // } catch (organizerError) {
+      //   console.error("Error fetching organizers:", organizerError);
+      // }
 
       toast.success("LogIn successfully!");
       navigate("/admin-home");

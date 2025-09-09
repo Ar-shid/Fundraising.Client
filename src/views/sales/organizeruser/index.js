@@ -1,9 +1,8 @@
-import AdminHeader from "../layout/AdminHeader";
-import Sidebar from "../layout/Sidebar";
-import CampaignCard from "./section/CampaignCard";
-import CampaignApprove from "./section/CampaignApprove";
+import AdminHeader from "../../admin/layout/AdminHeader";
+import Sidebar from "../../admin/layout/Sidebar";
 import { Link } from "react-router-dom";
-const AdminCampaign = () => {
+import OrganizerUserTable from "./section/OrganizerUserTable";
+const OrganizerUser = () => {
   return (
     <>
       <AdminHeader />
@@ -14,11 +13,9 @@ const AdminCampaign = () => {
             <div className="row">
               <div className="col-lg-12">
                 <div className="breadcrumb-main">
-                  <h4 className="text-capitalize breadcrumb-title">
-                    Your Campaigns
-                  </h4>
-                  <Link to="/add-campaign" className="PrimaryBtn">
-                    New Campaign
+                  <h4 className="text-capitalize breadcrumb-title">Users</h4>
+                  <Link to="" className="PrimaryBtn">
+                    Add User
                     <svg
                       className="ms-3"
                       width="11"
@@ -35,13 +32,13 @@ const AdminCampaign = () => {
                   </Link>
                 </div>
               </div>
-              <CampaignCard limit={8} />
-              <CampaignApprove />
             </div>
+            {/* <UserScoreCard /> */}
+            <OrganizerUserTable />
           </div>
         </div>
       </main>
     </>
   );
 };
-export default AdminCampaign;
+export default OrganizerUser;

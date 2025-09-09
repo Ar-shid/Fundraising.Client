@@ -60,12 +60,12 @@ const AdminHeader = () => {
             <Link to="/" className="navbar-brand">
               <img
                 style={{ maxWidth: "200px" }}
-                src="./img/logo.png"
+                src="/img/logo.png"
                 alt="img"
               />
             </Link>
             <form action="" className="search-form">
-              <img src="./img/svg/light.svg" alt="" />
+              <img src="/img/svg/light.svg" alt="" />
               <input
                 className="form-control mr-sm-2 box-shadow-none"
                 type="Search or type a command"
@@ -80,13 +80,13 @@ const AdminHeader = () => {
               <li className="nav-author">
                 <div className="dropdown-custom">
                   <a href="javascript:;" className="nav-item-toggle me-5">
-                    <img src="./img/svg/base.svg" alt="" />
+                    <img src="/img/svg/base.svg" alt="" />
                     <h4>{name}</h4>
                   </a>
                   <div className="dropdown-wrapper">
                     <div className="nav-author__info">
                       <div className="author-img">
-                        <img src="./img/svg/base.svg" alt="" />
+                        <img src="/img/svg/base.svg" alt="" />
                       </div>
                       <div>
                         <h6>{unique_name}</h6>
