@@ -1,6 +1,7 @@
 import AdminHeader from "../layout/AdminHeader";
 import Sidebar from "../layout/Sidebar";
 import GroupCard from "./section/GroupCard";
+import GroupApprove from "./section/GroupApprove";
 import { Link } from "react-router-dom";
 
 const AdminGroup = () => {
@@ -36,6 +37,14 @@ const AdminGroup = () => {
                 </div>
               </div>
               <GroupCard />
+              <div className="col-lg-12">
+                <div className="breadcrumb-main">
+                  <h4 className="text-capitalize breadcrumb-title">
+                    Group Creation Requests{" "}
+                  </h4>
+                </div>
+              </div>
+              <GroupApprove />
             </div>
           </div>
         </div>

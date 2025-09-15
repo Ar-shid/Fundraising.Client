@@ -8,6 +8,7 @@ import { getAllGroups } from "../../../../api/Group/Group";
 import { getAllProducts } from "../../../../api/Product/Porduct";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect } from "react";
 const AddCompaign = ({ token }) => {
@@ -18,6 +19,7 @@ const AddCompaign = ({ token }) => {
   const [products, setProducts] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const showErrorsInToast = (errors) => {
     if (Array.isArray(errors)) {
@@ -277,6 +279,9 @@ const AddCompaign = ({ token }) => {
 
     try {
       const response = await createCampaign(formDataToSend, token);
+      toast.success("Campaign created successfully!");
+      navigate("/admin-campaign");
+
       console.log("Campaign BIlal", response);
     } catch (error) {
       console.error("Error saving campaign:", error);
@@ -314,10 +319,10 @@ const AddCompaign = ({ token }) => {
                         <Link to="/admin-home">Home</Link>
                         <span className="breadcrumb__seperator">/</span>
                       </li>
-                      <li className="atbd-breadcrumb__item">
+                      {/* <li className="atbd-breadcrumb__item">
                         <Link to="/admin-campaign">Campaign List</Link>
                         <span className="breadcrumb__seperator">/</span>
-                      </li>
+                      </li> */}
                       <li className="atbd-breadcrumb__item">
                         <Link to="">Add Campaign</Link>
                         <span className="breadcrumb__seperator"></span>

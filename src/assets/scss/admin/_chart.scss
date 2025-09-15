@@ -36,3 +36,29 @@
   font-size: 20px;
   margin-bottom: 20px;
 }
+.organizer-list-card {
+  padding: 20px;
+}
+.organizer-list-card .info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.organizer-list-card h1 {
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+.organizer-list-card .info h4 {
+  font-weight: 500;
+  font-size: 14px;
+  color: #202226;
+  margin-bottom: 10px;
+}
+.organizer-list-card .info p {
+  font-weight: 400;
+  font-size: 13px;
+  color: #93989a;
+  margin: 0px;
+}

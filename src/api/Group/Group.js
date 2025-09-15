@@ -10,6 +10,38 @@ export const getAllGroups = async (token) => {
   return data;
 };
 
+// GET /api/group - Get all groups by organizer
+export const getAllGroupsByOrganizer = async (sub, token) => {
+  const { data } = await invoke({
+    url: `/api/group/GetOrganizerGroups${sub}`,
+    method: "GET",
+    token,
+  });
+  return data;
+};
+
+// GET /api/Group - Get Group Approval
+
+export const getGroupApproval = async (token) => {
+  const { data } = await invoke({
+    url: `/api/Group/GroupApprovals`,
+    method: "GET",
+    token,
+  });
+  return data;
+};
+
+// POST /api/Group/{id} - Update campaign Approval
+export const updateGroupApproval = async (id, status, token) => {
+  const { data } = await invoke({
+    url: `/api/Group/UpdateGroupApprovalAsync/${id}?status=${status}`,
+    method: "POST",
+    data: status,
+    token,
+  });
+  return data;
+};
+
 // POST /api/group - Create new group (FormData)
 export const createGroup = async (groupData, token) => {
   const { data } = await invoke({

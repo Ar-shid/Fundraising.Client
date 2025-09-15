@@ -229,6 +229,39 @@ h6 {
   height: 58px;
 }
 
+.view-price {
+  border: 1px solid #e6e6e6;
+  padding: 20px 0px;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.view-price div {
+  width: 20%;
+  border-right: 1px solid #e6e6e6;
+}
+
+.view-price div:last-child {
+  border: none;
+}
+
+.view-price span {
+  font-weight: 400;
+  font-size: 10.05px;
+  vertical-align: middle !important;
+  color: #8c8c8c !important;
+}
+
+.view-price h4 {
+  font-weight: 500 !important;
+  margin-top: 10px !important;
+  font-size: 11px !important;
+  vertical-align: middle !important;
+  color: #16192c !important;
+  line-height: 10px !important;
+  margin: 0px !important;
+}
+
 :root {
   --primary-color: #00bab5;
   --black-color: #000;
@@ -1310,6 +1343,37 @@ section.auth .left-content .custom_form form p.login-btn a {
   font-weight: 500;
   font-size: 20px;
   margin-bottom: 20px;
+}
+
+.organizer-list-card {
+  padding: 20px;
+}
+
+.organizer-list-card .info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.organizer-list-card h1 {
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.organizer-list-card .info h4 {
+  font-weight: 500;
+  font-size: 14px;
+  color: #202226;
+  margin-bottom: 10px;
+}
+
+.organizer-list-card .info p {
+  font-weight: 400;
+  font-size: 13px;
+  color: #93989a;
+  margin: 0px;
 }
 
 .shimmer-wrapper {

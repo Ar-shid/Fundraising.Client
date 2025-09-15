@@ -2,6 +2,7 @@ import AdminHeader from "../layout/AdminHeader";
 import Sidebar from "../layout/Sidebar";
 import ScoreCard from "./section/ScoreCard";
 import CampaignCard from "../campaign/section/CampaignCard";
+import AdminOrganizerList from "./section/AdminOrganizerList";
 const AdminHome = () => {
   return (
     <>
@@ -27,7 +28,9 @@ const AdminHome = () => {
                 </div>
               </div>
               <CampaignCard limit={3} />
-              <div className="col-lg-3">Bilal</div>
+              <div className="col-lg-3">
+                <AdminOrganizerList />
+              </div>
             </div>
           </div>
         </div>

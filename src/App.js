@@ -12,6 +12,7 @@ import ResetPassword from "./views/admin/auth/ResetPass";
 import AdminHome from "./views/admin/home";
 import AdminCampaign from "./views/admin/campaign";
 import AddCompaign from "./views/admin/campaign/pages/AddCompaign";
+import EditCompaign from "./views/admin/campaign/pages/EditCampaign";
 import AdminGroup from "./views/admin/group";
 import AddGroup from "./views/admin/group/pages/AddGroup";
 import AdminProduct from "./views/admin/product";
@@ -27,9 +28,11 @@ import OrganizerHome from "./views/organizer/home";
 import OrganizerCampaign from "./views/organizer/campaign";
 import OrganizerGroup from "./views/organizer/group";
 import OrganizerParticipant from "./views/organizer/participant";
+import OrganizerUser from "./views/sales/organizeruser";
 // Sale Links Start
 import SalesHome from "./views/sales/home";
 import SalesCampaign from "./views/sales/campaign";
+import SalesGroup from "./views/sales/group";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/scss/style.css";
 import "./assets/scss/test.css";
@@ -65,6 +68,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddCompaign />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-campaign/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditCompaign />
               </ProtectedRoute>
             }
           />
@@ -186,6 +197,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <SalesCampaign />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller-group"
+            element={
+              <ProtectedRoute>
+                <SalesGroup />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller-user"
+            element={
+              <ProtectedRoute>
+                <OrganizerUser />
               </ProtectedRoute>
             }
           />
