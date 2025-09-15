@@ -28,9 +28,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 5️⃣ Build React App (ignore ESLint warnings)
+      # 5️⃣ Build React App with API URL from secret
       - name: Build React App
         run: CI=false npm run build
+        env:
+          REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL }}
 
       # 6️⃣ Ensure target directory exists & cleanup old builds
       - name: Ensure Target Directory Exists & Cleanup Old Builds
@@ -58,4 +60,3 @@ jobs:
           port: 22
           source: "build/*"
           target: "C:\\Builds\\Build-${{ env.BUILD_TIMESTAMP }}\\Fundrasing"
-
