@@ -46,11 +46,32 @@ export const getOrganizers = async (token) => {
   return data;
 };
 
+// GET /api/Auth/GetSalesPerson - Get all Sales
+export const getSalesPerson = async (token) => {
+  const { data } = await invoke({
+    url: `/api/User/GetSalePerson`,
+    method: "GET",
+    token,
+  });
+  return data;
+};
+
 // GET /api/Auth/GetAllUser - Get all organizers
 export const getUser = async (token) => {
   const { data } = await invoke({
     url: `/api/User`,
     method: "GET",
+    token,
+  });
+  return data;
+};
+
+// PUT /api/User/update-email - Update user email
+export const updateEmail = async (email, token) => {
+  const { data } = await invoke({
+    url: `/api/User/update-email`,
+    method: "PUT",
+    data: { email },
     token,
   });
   return data;

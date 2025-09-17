@@ -21,6 +21,17 @@ export const getCampaignApproval = async (token) => {
   return data;
 };
 
+// GET /api/Compaign - Get campaigns Approval
+
+export const GetOrganizerCompaigns = async (sub, token) => {
+  const { data } = await invoke({
+    url: `/api/Compaign/GetOrganizerCompaigns${sub}`,
+    method: "GET",
+    token,
+  });
+  return data;
+};
+
 // POST /api/Compaign - Create new campaign (Form data)
 
 export const createCampaign = async (campaignData, token) => {

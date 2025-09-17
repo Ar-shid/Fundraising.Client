@@ -5,13 +5,6 @@ import Swal from "sweetalert2";
 
 const AdminHeader = () => {
   const navigate = useNavigate();
-  // const handleSignOut = () => {
-  //   localStorage.removeItem("token");
-  //   localStorage.removeItem("user");
-
-  //   navigate("/login");
-  // };
-
   const handleSignOut = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -39,13 +32,14 @@ const AdminHeader = () => {
   let email = "";
   let name = "";
   let unique_name = "";
-
+  let given_name = "";
   if (token) {
     const decoded = jwtDecode(token);
     if (decoded.name) {
       email = decoded.email.split("@")[0];
       name = decoded.name;
       unique_name = decoded.unique_name;
+      given_name = decoded.given_name;
     }
   }
 
@@ -90,7 +84,7 @@ const AdminHeader = () => {
                       </div>
                       <div>
                         <h6>{unique_name}</h6>
-                        <span>Admin</span>
+                        <span>{given_name}</span>
                       </div>
                     </div>
                     <div className="nav-author__options">

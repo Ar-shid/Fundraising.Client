@@ -1,5 +1,5 @@
 // import { getOrganizers } from "../../../../api/Auth/Auth";
-import { getAllGroups } from "../../../../api/Group/Group";
+import { getAllGroupsByOrganizer } from "../../../../api/Group/Group";
 import { useState, useEffect } from "react";
 import Shimmer from "../../../admin/common/shimmer";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -11,9 +11,11 @@ const OGroupTable = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("token");
+      const sub = localStorage.getItem("sub");
+
       if (!token) return;
       try {
-        const res = await getAllGroups(token);
+        const res = await getAllGroupsByOrganizer(sub, token);
 
         console.log("Get Groups", res);
 
@@ -81,24 +83,45 @@ const OGroupTable = () => {
                           </div>
                         </td>
                         <td>
-                          <div className="userDatatable-content">1200</div>
+                          <div className="d-flex">
+                            <div className="userDatatable-inline-title">
+                              <h6>1200</h6>
+                            </div>
+                          </div>
                         </td>
                         <td>
-                          {group.isApproved ? (
-                            <div className="order-bg-opacity-primary userDatatable-content">
-                              Active
+                          {group.status === 1 && (
+                            <div
+                              style={{ backgroundColor: "#F8D7DA" }}
+                              className="order-bg-opacity-primary userDatatable-content"
+                            >
+                              Denied
                             </div>
-                          ) : (
+                          )}
+                          {group.status === 2 && (
                             <div
                               style={{ backgroundColor: "#E5F1CC" }}
                               className="order-bg-opacity-primary userDatatable-content"
                             >
-                              Waiting
+                              Working
                             </div>
                           )}
-                          {/* <div className="order-bg-opacity-primary userDatatable-content">
-                            {group.isApproved}
-                          </div> */}
+                          {group.status === 3 && (
+                            <div
+                              style={{ backgroundColor: "#CCE5FF" }}
+                              className="order-bg-opacity-primary userDatatable-content"
+                            >
+                              Active
+                            </div>
+                          )}
+                          {group.status === 4 && (
+                            <div
+                              style={{ backgroundColor: "#FFF3CD" }}
+                              className="order-bg-opacity-primary userDatatable-content"
+                            >
+                              InActive
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))}
