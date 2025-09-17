@@ -1,7 +1,64 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { updateEmail } from "../../../../api/Auth/Auth";
+import { jwtDecode } from "jwt-decode";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Modal, Button, Form } from "react-bootstrap";
+
 const SignInMethod = () => {
+  const token = localStorage.getItem("token");
+  let emailAddress = "";
+  if (token) {
+    const decoded = jwtDecode(token);
+    if (decoded.name) {
+      emailAddress = decoded.email;
+    }
+  }
+  const [showModal, setShowModal] = useState(false);
+  const [email, setEmail] = useState(emailAddress); // current email
+  const [newEmail, setNewEmail] = useState(email);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleOpenModal = () => {
+    setNewEmail(email); // pre-fill with current email
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleUpdateEmail = async () => {
+    if (!newEmail) {
+      toast.error("Email cannot be empty!");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // direct localStorage se
+      if (!token) return;
+      await updateEmail(newEmail, token);
+
+      setEmail(newEmail); // update displayed email
+      toast.success("Email updated successfully!");
+      setShowModal(false);
+      localStorage.removeItem("token");
+      setTimeout(() => {
+        window.location.href = "/login"; // redirect to login
+      }, 1500);
+    } catch (err) {
+      console.error("Update error:", err);
+      toast.error(err.response?.data?.message || "Error updating email!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
+      <ToastContainer />
+
       <div className="col-lg-12">
         <div className="card card-Vertical card-default campaign-form card-md mb-4">
           <div className="card-header">
@@ -11,12 +68,19 @@ const SignInMethod = () => {
             <div className="setting">
               <div className="left">
                 <h4>Email Address</h4>
-                <p>eureka88@email.com</p>
+                <p>{email}</p>
               </div>
               <div className="right">
-                <Link className="email" to="/profile">
+                {/* <Link className="email" to="/profile">
                   Change email
-                </Link>
+                </Link> */}
+                <Button
+                  className="email"
+                  variant="link"
+                  onClick={handleOpenModal}
+                >
+                  Change email
+                </Button>
               </div>
             </div>
             <div className="setting">
@@ -25,7 +89,7 @@ const SignInMethod = () => {
                 <p>*******************</p>
               </div>
               <div className="right">
-                <Link className="email" to="/profile">
+                <Link className="email" to="/forgot-password">
                   Change password
                 </Link>
               </div>
@@ -66,6 +130,37 @@ const SignInMethod = () => {
           </div>
         </div>
       </div>
+      <Modal
+        style={{ zIndex: "9999999" }}
+        show={showModal}
+        onHide={handleCloseModal}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Update Email</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <button
+            className="btn PrimaryBtn"
+            onClick={handleUpdateEmail}
+            disabled={isLoading}
+          >
+            {isLoading ? "Updating..." : "Update"}
+          </button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

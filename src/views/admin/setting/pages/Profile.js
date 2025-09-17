@@ -3,20 +3,6 @@ import Sidebar from "../../layout/Sidebar";
 import { jwtDecode } from "jwt-decode";
 
 const Profile = () => {
-  const token = localStorage.getItem("token");
-  let email = "";
-  let name = "";
-  let unique_name = "";
-
-  if (token) {
-    const decoded = jwtDecode(token);
-    console.log(decoded);
-    if (decoded.name) {
-      email = decoded.email;
-      name = decoded.name;
-      unique_name = decoded.unique_name;
-    }
-  }
   return (
     <>
       <AdminHeader />
@@ -40,12 +26,11 @@ const Profile = () => {
                                 htmlFor="formGroupExampleInput"
                                 className="color-dark fs-14 fw-500 align-center"
                               >
-                                Name*
+                                First Name*
                               </label>
                               <input
                                 type="text"
                                 className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                value={unique_name}
                               />
                             </div>
                             <div className="form-group">
@@ -53,25 +38,11 @@ const Profile = () => {
                                 htmlFor="formGroupExampleInput"
                                 className="color-dark fs-14 fw-500 align-center"
                               >
-                                Email*
+                                Last Name*
                               </label>
                               <input
-                                type="email"
+                                type="text"
                                 className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                value={email}
-                              />
-                            </div>
-                            <div className="form-group">
-                              <label
-                                htmlFor="formGroupExampleInput"
-                                className="color-dark fs-14 fw-500 align-center"
-                              >
-                                Password*
-                              </label>
-                              <input
-                                type="password"
-                                className="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                placeholder="********"
                               />
                             </div>
                             <div className="layout-button mt-5 text-end">

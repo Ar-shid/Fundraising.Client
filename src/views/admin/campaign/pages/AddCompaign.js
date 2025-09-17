@@ -4,6 +4,7 @@ import React from "react";
 import ImageUploading from "react-images-uploading";
 import { createCampaign } from "../../../../api/Campaign/Campaign";
 import { getOrganizers } from "../../../../api/Auth/Auth";
+import { getSalesPerson } from "../../../../api/Auth/Auth";
 import { getAllGroups } from "../../../../api/Group/Group";
 import { getAllProducts } from "../../../../api/Product/Porduct";
 import Select from "react-select";
@@ -12,6 +13,10 @@ import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect } from "react";
 const AddCompaign = ({ token }) => {
+  const role = localStorage.getItem("given_name"); // Example: "Admin" | "SalesPerson"
+
+  const [salesPerson, setSalesPerson] = useState([]);
+  const [assigneOptions, setAssigneOptions] = useState([]);
   const [organizer, setOrganizer] = useState([]);
   const [organizerOptions, setorganizerOptions] = useState([]);
   const [group, setGroup] = useState([]);
@@ -20,6 +25,23 @@ const AddCompaign = ({ token }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const assignedToId = localStorage.getItem("sub");
+    const assignedToName = localStorage.getItem("given_name");
+
+    if (role === "Sales Person" && assignedToId && assignedToName) {
+      setFormData((prev) => ({
+        ...prev,
+        assignedToId,
+        assignedToName,
+      }));
+      console.log("Salesperson auto-assigned:", {
+        assignedToId,
+        assignedToName,
+      });
+    }
+  }, [role]);
 
   const showErrorsInToast = (errors) => {
     if (Array.isArray(errors)) {
@@ -45,7 +67,7 @@ const AddCompaign = ({ token }) => {
     description: "",
     requiredAmount: "",
     raisedAmount: "",
-    assignedToId: null,
+    assignedToId: "",
     assignedToName: "",
     CreatedByName: "",
     startDate: "",
@@ -58,13 +80,58 @@ const AddCompaign = ({ token }) => {
   const [images, setImages] = React.useState([]);
   const maxNumber = 69;
 
+  // Get Assigned ID in DropDOwn
+
+  const handleAssigneChange = (selected) => {
+    setAssigneOptions(selected);
+
+    setFormData((prev) => ({
+      ...prev,
+      assignedToId: selected ? selected.value : "",
+      assignedToName: selected ? selected.label : "",
+    }));
+  };
+
+  useEffect(() => {
+    const fetchSalesPerson = async () => {
+      const token = localStorage.getItem("token"); // direct localStorage se
+      if (!token) return;
+      try {
+        const res = await getSalesPerson(token);
+        // map API data to react-select format
+        const formatted = res.data.map((p) => ({
+          value: p.id,
+          label: p.name,
+        }));
+        setSalesPerson(formatted);
+        console.log("sca", formatted);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchSalesPerson();
+  }, [token]);
+
+  // Get Assigned ID in DropDOwn Complete
   // Get Organizer ID in DropDOwn
+
+  // const handleorganizerChange = (selected) => {
+  //   setorganizerOptions(selected);
+
+  //   const OrganizerIds = selected.map((opt) => opt.value);
+
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     OrganizerIds,
+  //   }));
+  // };
 
   const handleorganizerChange = (selected) => {
     setorganizerOptions(selected);
-
-    const OrganizerIds = selected.map((opt) => opt.value); // ✅ keep GUID as string
-
+    const OrganizerIds = selected.map((opt) => ({
+      id: opt.value,
+      name: opt.label || "",
+    }));
     setFormData((prev) => ({
       ...prev,
       OrganizerIds,
@@ -134,6 +201,7 @@ const AddCompaign = ({ token }) => {
     setSelectedOptions(selected);
 
     const ProductIds = selected.map((opt) => Number(opt.value));
+    // const ProductIds = selected.map((opt) => ({ id: Number(opt.value) }));
 
     setFormData((prev) => ({
       ...prev,
@@ -238,6 +306,18 @@ const AddCompaign = ({ token }) => {
       }
     });
 
+    // formDataToSend.append("ProductIds", JSON.stringify(formData.ProductIds));
+    // formDataToSend.append("GroupIds", JSON.stringify(formData.GroupIds));
+    formDataToSend.append(
+      "AssignedToId",
+      JSON.stringify(formData.assignedToId)
+    );
+
+    formDataToSend.append(
+      "OrganizerIds",
+      JSON.stringify(formData.OrganizerIds)
+    );
+
     // ✅ Append ProductIds
     if (formData.ProductIds && formData.ProductIds.length > 0) {
       formData.ProductIds.forEach((id) => {
@@ -253,11 +333,11 @@ const AddCompaign = ({ token }) => {
     }
 
     // ✅ Append OrganizerIds
-    if (formData.OrganizerIds && formData.OrganizerIds.length > 0) {
-      formData.OrganizerIds.forEach((id) => {
-        formDataToSend.append("OrganizerIds", id);
-      });
-    }
+    // if (formData.OrganizerIds && formData.OrganizerIds.length > 0) {
+    //   formData.OrganizerIds.forEach((id) => {
+    //     formDataToSend.append("OrganizerIds", id);
+    //   });
+    // }
 
     // ✅ Complex objects (must be appended as stringified JSON, one per array element)
     // formDataToSend.append(
@@ -280,7 +360,6 @@ const AddCompaign = ({ token }) => {
     try {
       const response = await createCampaign(formDataToSend, token);
       toast.success("Campaign created successfully!");
-      navigate("/admin-campaign");
 
       console.log("Campaign BIlal", response);
     } catch (error) {
@@ -316,7 +395,7 @@ const AddCompaign = ({ token }) => {
                   <div className="card-body">
                     <ul className="atbd-breadcrumb nav">
                       <li className="atbd-breadcrumb__item">
-                        <Link to="/admin-home">Home</Link>
+                        <Link to="">Home</Link>
                         <span className="breadcrumb__seperator">/</span>
                       </li>
                       {/* <li className="atbd-breadcrumb__item">
@@ -511,6 +590,29 @@ const AddCompaign = ({ token }) => {
                             <li>Custom</li>
                           </ul>
                         </div>
+                        {role === "Admin" && (
+                          <>
+                            <h3 className="my-5" style={{ fontWeight: "bold" }}>
+                              Assigned to ID
+                            </h3>
+                            <div className="row">
+                              <div className="col-lg-12 col-sm-12">
+                                <div className="form-group">
+                                  <label className="color-dark fs-14 fw-500 align-center">
+                                    Assigned to Sales Person
+                                  </label>
+                                  <Select
+                                    options={salesPerson}
+                                    value={assigneOptions}
+                                    onChange={handleAssigneChange}
+                                    className="mb-3"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+
                         <h3 className="my-5" style={{ fontWeight: "bold" }}>
                           Organizer / Group{" "}
                         </h3>

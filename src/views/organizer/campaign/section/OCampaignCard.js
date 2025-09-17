@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
-  getAllCampaigns,
+  GetOrganizerCompaigns,
   getCampaignById,
 } from "../../../../api/Campaign/Campaign";
 import { useState, useEffect } from "react";
@@ -29,9 +29,11 @@ const OCampaignCard = ({ limit }) => {
   useEffect(() => {
     const fetchGroups = async () => {
       const token = localStorage.getItem("token");
+      const sub = localStorage.getItem("sub");
+
       if (!token) return;
       try {
-        const res = await getAllCampaigns(token);
+        const res = await GetOrganizerCompaigns(sub, token);
 
         console.log("Get Campaign", res);
         const sortedData = res.data.sort((a, b) => b.id - a.id);

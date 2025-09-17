@@ -33,7 +33,6 @@ const OrganizerUser = () => {
                 </div>
               </div>
             </div>
-            {/* <UserScoreCard /> */}
             <OrganizerUserTable />
           </div>
         </div>
