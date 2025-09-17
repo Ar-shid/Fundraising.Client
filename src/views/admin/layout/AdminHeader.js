@@ -110,7 +110,7 @@ const AdminHeader = () => {
                           </Link>
                         </li>
                         <li>
-                          <Link to="/admin-setting">
+                          <Link to="/setting">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="24"

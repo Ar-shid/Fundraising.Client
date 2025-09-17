@@ -128,7 +128,7 @@ function App() {
             }
           />
           <Route
-            path="/admin-setting"
+            path="/setting"
             element={
               <ProtectedRoute>
                 <AdminSetting />
