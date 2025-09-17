@@ -103,7 +103,8 @@ const UserTable = () => {
               <div className="d-flex justify-content-between">
                 <div>
                   <h1>{totalUsers}</h1>
-                  <p>Total Participants </p>
+                  {/* <p>Total Participants </p> */}
+                  <p>Total Users </p>
                 </div>
 
                 <div className="ap-po-details-time">
@@ -366,7 +367,7 @@ const UserTable = () => {
                         </td>
                         <td>
                           <div className="order-bg-opacity-primary userDatatable-content">
-                            Organizer
+                            {user.role}
                           </div>
                         </td>
                         <td>

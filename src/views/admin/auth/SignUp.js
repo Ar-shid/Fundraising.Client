@@ -50,9 +50,9 @@ const SignUp = () => {
     try {
       const response = await register(data);
       toast.success("User created successfully!");
-      // setTimeout(() => {
-      //   navigate("/login");
-      // }, 7000);
+      setTimeout(() => {
+        navigate("/login");
+      }, 7000);
     } catch (error) {
       const backendErrors = error.response?.data;
       if (backendErrors?.errors) {
