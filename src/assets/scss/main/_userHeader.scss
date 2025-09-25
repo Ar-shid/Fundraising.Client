@@ -1,0 +1,57 @@
+.custom-header {
+  padding: 0px;
+  top: 20px;
+  z-index: 9999999;
+
+  .header {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    padding: 6px 8px 6px 16px;
+    border-radius: 10px;
+    border: 1px solid #fcfcfd;
+    background: rgba(249, 249, 251, 0.5);
+    box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(50px);
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: right;
+    .navbar-collapse {
+      justify-content: center;
+    }
+
+    .navbar-nav {
+      gap: 30px;
+      margin: 0px !important;
+    }
+    .navbar-nav {
+      .nav-link {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: normal;
+        padding: 0px;
+        display: flex;
+        gap: 6px;
+        color: #121212;
+        align-items: center;
+      }
+      .dropdown-toggle {
+        &::after {
+          border: none;
+          background-image: url(/public/img/carrot.svg);
+          background-repeat: no-repeat;
+          width: 18px;
+          height: 6px;
+          margin: 0px;
+        }
+      }
+    }
+  }
+  .navbar-brand {
+    margin: 0px;
+    padding: 0px;
+  }
+}
+.custom-header.mobile {
+  display: none;
+}

@@ -10,8 +10,6 @@ import { getAllProducts } from "../../../../api/Product/Porduct";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import CampaignTitle from "./field/CampaignTitle";
-import CampaignDesc from "./field/CampaignDesc";
 
 import { useState, useEffect } from "react";
 const AddCompaign = ({ token }) => {
@@ -119,11 +117,8 @@ const AddCompaign = ({ token }) => {
 
   // const handleorganizerChange = (selected) => {
   //   setorganizerOptions(selected);
-  //   // const OrganizerIds = selected.map((opt) => ({
-  //   //   id: opt.value,
-  //   //   name: opt.label || "",
-  //   // }));
-  //   const OrganizerIds = selected.map((opt) => Number(opt.value));
+
+  //   const OrganizerIds = selected.map((opt) => opt.value);
 
   //   setFormData((prev) => ({
   //     ...prev,
@@ -133,10 +128,10 @@ const AddCompaign = ({ token }) => {
 
   const handleorganizerChange = (selected) => {
     setorganizerOptions(selected);
-
-    // Array of IDs only
-    const OrganizerIds = selected.map((opt) => opt.value);
-
+    const OrganizerIds = selected.map((opt) => ({
+      id: opt.value,
+      name: opt.label || "",
+    }));
     setFormData((prev) => ({
       ...prev,
       OrganizerIds,
@@ -318,10 +313,10 @@ const AddCompaign = ({ token }) => {
       JSON.stringify(formData.assignedToId)
     );
 
-    // formDataToSend.append(
-    //   "OrganizerIds",
-    //   JSON.stringify(formData.OrganizerIds)
-    // );
+    formDataToSend.append(
+      "OrganizerIds",
+      JSON.stringify(formData.OrganizerIds)
+    );
 
     // ✅ Append ProductIds
     if (formData.ProductIds && formData.ProductIds.length > 0) {
@@ -338,18 +333,10 @@ const AddCompaign = ({ token }) => {
     }
 
     // ✅ Append OrganizerIds
-    if (formData.OrganizerIds && formData.OrganizerIds.length > 0) {
-      formData.OrganizerIds.forEach((id) => {
-        formDataToSend.append("OrganizerIds", id);
-      });
-    }
-
-    // Working as just ID
     // if (formData.OrganizerIds && formData.OrganizerIds.length > 0) {
-    //   formDataToSend.append(
-    //     "OrganizerIds",
-    //     JSON.stringify(formData.OrganizerIds)
-    //   );
+    //   formData.OrganizerIds.forEach((id) => {
+    //     formDataToSend.append("OrganizerIds", id);
+    //   });
     // }
 
     // ✅ Complex objects (must be appended as stringified JSON, one per array element)
@@ -411,10 +398,10 @@ const AddCompaign = ({ token }) => {
                         <Link to="">Home</Link>
                         <span className="breadcrumb__seperator">/</span>
                       </li>
-                      <li className="atbd-breadcrumb__item">
+                      {/* <li className="atbd-breadcrumb__item">
                         <Link to="/admin-campaign">Campaign List</Link>
                         <span className="breadcrumb__seperator">/</span>
-                      </li>
+                      </li> */}
                       <li className="atbd-breadcrumb__item">
                         <Link to="">Add Campaign</Link>
                         <span className="breadcrumb__seperator"></span>
@@ -429,14 +416,38 @@ const AddCompaign = ({ token }) => {
                   <div className="card-body p-5">
                     <div className="Vertical-form">
                       <form action="#">
-                        <CampaignTitle
-                          value={formData.name}
-                          onChange={handleChange}
-                        />
-                        <CampaignDesc
-                          value={formData.description}
-                          onChange={handleChange}
-                        />
+                        <div className="form-group">
+                          <label
+                            htmlFor="formGroupExampleInput"
+                            className="color-dark fs-14 fw-500 align-center"
+                          >
+                            Campaign Title *
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control ih-medium ip-gray radius-xs b-light px-15"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Campaign Title here"
+                          />
+                        </div>
+                        <div className="form-group form-element-textarea mb-20">
+                          <label
+                            htmlFor="exampleFormControlTextarea1"
+                            className="il-gray fs-14 fw-500 align-center"
+                          >
+                            Campaign Description *
+                          </label>
+                          <textarea
+                            className="form-control"
+                            placeholder="About Campaign "
+                            rows={5}
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                          />
+                        </div>
                         <div className="form-group form-element-textarea mb-20">
                           <label
                             htmlFor="exampleFormControlTextarea1"
